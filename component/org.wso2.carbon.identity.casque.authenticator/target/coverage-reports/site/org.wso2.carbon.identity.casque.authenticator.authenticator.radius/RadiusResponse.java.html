@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RadiusResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Casque Authenticator Component</a> &gt; <a href="index.source.html" class="el_package">org.wso2.carbon.identity.casque.authenticator.authenticator.radius</a> &gt; <span class="el_source">RadiusResponse.java</span></div><h1>RadiusResponse.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
+
+import java.io.Serializable;
+
+public class RadiusResponse implements Serializable {
+
+    private static final long serialVersionUID = 4341535155455223602L;
+    private int type;
+    private byte[] state;
+    private byte[] message;
+
+    public final static int ACCESS_CHALLENGE = 11;
+    public final static int ACCESS_REJECT = 3;
+    public final static int ACCESS_ACCEPT = 2;
+    public final static int ACCESS_REQUEST = 1;
+    public final static int PACKET_LENGTH_ERROR = -1;
+    public final static int DIGEST_ERROR = -2;
+    public final static int ATTRIBUTE_ERROR = -3;
+    public final static int RADIUS_ERROR = -4;
+
+<span class="nc" id="L38">    public RadiusResponse(int type) {</span>
+
+<span class="nc" id="L40">        this.type = type;</span>
+<span class="nc" id="L41">    }</span>
+
+<span class="nc" id="L43">    public RadiusResponse(int type, byte[] message, byte[] state) {</span>
+
+<span class="nc" id="L45">        this.type = type;</span>
+<span class="nc" id="L46">        this.state = state;</span>
+<span class="nc" id="L47">        this.message = message;</span>
+<span class="nc" id="L48">    }</span>
+
+    public String getChallenge() {
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (message == null) {</span>
+<span class="nc" id="L53">            message = new byte[]{'N', 'O', 'N', 'E'};</span>
+        }
+<span class="nc" id="L55">        return new String(message);</span>
+    }
+
+    public byte[] getState() {
+
+<span class="nc" id="L60">        return state;</span>
+    }
+
+    public int getType() {
+
+<span class="nc" id="L65">        return type;</span>
+    }
+
+    public String getError() {
+
+<span class="nc" id="L70">        return getErrorString(type);</span>
+    }
+
+    private String getErrorString(int type) {
+
+<span class="nc bnc" id="L75" title="All 5 branches missed.">        switch (type) {</span>
+            case PACKET_LENGTH_ERROR:
+<span class="nc" id="L77">                return &quot;Packet Length Error&quot;;</span>
+            case DIGEST_ERROR:
+<span class="nc" id="L79">                return &quot;Digest Error&quot;;</span>
+            case ATTRIBUTE_ERROR:
+<span class="nc" id="L81">                return &quot;Attribute Error&quot;;</span>
+            case RADIUS_ERROR:
+<span class="nc" id="L83">                return &quot;RADIUS Error&quot;;</span>
+            default:
+<span class="nc" id="L85">                return &quot;None&quot;;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

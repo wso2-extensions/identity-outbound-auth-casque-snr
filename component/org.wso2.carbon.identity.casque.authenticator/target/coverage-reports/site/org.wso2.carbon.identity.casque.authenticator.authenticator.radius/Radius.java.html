@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Radius.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Casque Authenticator Component</a> &gt; <a href="index.source.html" class="el_package">org.wso2.carbon.identity.casque.authenticator.authenticator.radius</a> &gt; <span class="el_source">Radius.java</span></div><h1>Radius.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.casque.authenticator.authenticator.CasqueConfig;
+import org.wso2.carbon.identity.casque.authenticator.exception.CasqueException;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
+<span class="nc" id="L31">public class Radius implements Serializable {</span>
+
+<span class="nc" id="L33">    private static final Log log = LogFactory.getLog(Radius.class);</span>
+    private static final long serialVersionUID = 4341535155455223601L;
+<span class="nc" id="L35">    private static DatagramSocket socket = null;</span>
+
+    public static RadiusResponse sendRequest(String uid, String pass, byte[] state) throws CasqueException {
+
+<span class="nc" id="L39">        CasqueConfig.loadConfig();</span>
+
+<span class="nc" id="L41">        byte[] buffer = RadiusPacket.formRequestPacket(uid, pass, state);</span>
+<span class="nc" id="L42">        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, CasqueConfig.casqueAddress,</span>
+                CasqueConfig.casquePort);
+        try {
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            if (socket == null) {</span>
+<span class="nc" id="L46">                socket = new DatagramSocket(CasqueConfig.localPort);</span>
+<span class="nc" id="L47">                socket.setSoTimeout(1000);</span>
+            }
+<span class="nc" id="L49">        } catch (SocketException e) {</span>
+<span class="nc" id="L50">            throw new CasqueException(&quot;Error creating the Datagram Socket. &quot; + e.getMessage());</span>
+<span class="nc" id="L51">        }</span>
+        DatagramPacket responsePacket;
+<span class="nc" id="L53">        int tries = 3;</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        while (tries-- != 0) {</span>
+            try {
+<span class="nc" id="L56">                byte[] b = new byte[512];</span>
+<span class="nc" id="L57">                responsePacket = new DatagramPacket(b, b.length);</span>
+<span class="nc" id="L58">                socket.setSoTimeout(1000);</span>
+<span class="nc" id="L59">                socket.send(packet);</span>
+<span class="nc" id="L60">                socket.setSoTimeout(2500);</span>
+<span class="nc" id="L61">                socket.receive(responsePacket);</span>
+<span class="nc" id="L62">                return RadiusPacket.parsePacket(responsePacket);</span>
+<span class="nc" id="L63">            } catch (IOException ioe) {</span>
+<span class="nc" id="L64">            }</span>
+        }
+<span class="nc" id="L66">        log.info(&quot;Error contacting the CASQUE SNR Server&quot;);</span>
+<span class="nc" id="L67">        return new RadiusResponse(RadiusResponse.RADIUS_ERROR);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
