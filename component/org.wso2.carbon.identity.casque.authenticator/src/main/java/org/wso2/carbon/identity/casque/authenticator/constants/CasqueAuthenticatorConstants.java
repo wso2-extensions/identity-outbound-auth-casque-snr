@@ -17,6 +17,9 @@
  */
 package org.wso2.carbon.identity.casque.authenticator.constants;
 
+/**
+ * CASQUE SNR Authenticator Constants
+ */
 public class CasqueAuthenticatorConstants {
 
     public static final String AUTHENTICATOR_NAME = "casque_authenticator";

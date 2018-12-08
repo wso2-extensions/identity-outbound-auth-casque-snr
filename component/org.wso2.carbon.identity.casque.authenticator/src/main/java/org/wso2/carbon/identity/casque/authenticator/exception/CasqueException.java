@@ -17,6 +17,9 @@
  */
 package org.wso2.carbon.identity.casque.authenticator.exception;
 
+/**
+ * CASQUE SNR Authenticator Exceptions
+ */
 public class CasqueException extends Exception {
 
     public CasqueException() {

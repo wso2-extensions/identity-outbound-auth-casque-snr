@@ -26,6 +26,9 @@ import java.net.DatagramPacket;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
+/**
+ * Send RADIUS packets to CASQUE SNR Authenticaticon Server
+ */
 public class RadiusPacket implements Serializable {
 
     private static final Log log = LogFactory.getLog(RadiusPacket.class);
@@ -54,6 +57,10 @@ public class RadiusPacket implements Serializable {
 
     }
 
+    /**
+     * MessageDigest
+     * @return
+     */
     private static MessageDigest getMD5() {
 
         if (md5Digest == null) {
@@ -136,11 +143,9 @@ public class RadiusPacket implements Serializable {
 
         if (messageDigest != null) {
             messageDigest.update(CasqueConfig.radiusSecret);
-
             messageDigest.update(tempBuffer, 4, 16);
 
             byte[] digest = messageDigest.digest();
-
             tempBuffer[offset++] = USER_PASSWORD;                // USER_PASSWORD
             tempBuffer[offset++] = (byte) (passLength + 2);     // Length of USER_PASSWORD attribute
             int i;
@@ -246,7 +251,6 @@ public class RadiusPacket implements Serializable {
 
         byte[] tempBuffer = packet.getData();
         int dataLength = (tempBuffer[2] & 0xff) * 256 + (tempBuffer[3] & 0xff);
-
         if (packetLength < dataLength) {
             return new RadiusResponse(RadiusResponse.PACKET_LENGTH_ERROR);
         }
@@ -256,12 +260,10 @@ public class RadiusPacket implements Serializable {
         byte[] digest = new byte[16];
         System.arraycopy(tempBuffer, 4, digest, 0, 16);
         System.arraycopy(reqAuth, 0, tempBuffer, 4, 16);
-
         MessageDigest md = getMD5();
 
         if (md != null) {
             md.update(tempBuffer, 0, dataLength);
-
             md.update(CasqueConfig.radiusSecret);
 
             byte[] digest2 = md.digest();
@@ -273,7 +275,6 @@ public class RadiusPacket implements Serializable {
             }
 
             int offset = 20;
-
             int index = 0;
             byte[][] attributes = new byte[16][3];
 

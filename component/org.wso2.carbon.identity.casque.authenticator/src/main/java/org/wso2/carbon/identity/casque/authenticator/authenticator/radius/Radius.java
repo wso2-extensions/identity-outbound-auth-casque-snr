@@ -28,12 +28,23 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+/**
+ * Send request to CASQUE SNR Authenticaticon Server to get RADIUS packets
+ */
 public class Radius implements Serializable {
 
     private static final Log log = LogFactory.getLog(Radius.class);
     private static final long serialVersionUID = 4341535155455223601L;
     private static DatagramSocket socket = null;
 
+    /**
+     * Send Reques to CASQUE SNR Authenticaticon Server
+     * @param uid ,
+     * @param pass ,
+     * @param state ,
+     * @return
+     * @throws CasqueException
+     */
     public static RadiusResponse sendRequest(String uid, String pass, byte[] state) throws CasqueException {
 
         CasqueConfig.loadConfig();

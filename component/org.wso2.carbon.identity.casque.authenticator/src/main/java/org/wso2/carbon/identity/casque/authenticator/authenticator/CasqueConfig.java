@@ -29,6 +29,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.InetAddress;
 
+/**
+ * CASQUE SNR Authenticator Configurations
+ */
 public class CasqueConfig {
 
     public static byte[] radiusSecret = null;
@@ -37,6 +40,11 @@ public class CasqueConfig {
     public static int localPort = 0;
     private static boolean configLoaded = false;
 
+    /**
+     * Configuration line readings
+     * @param line ,
+     * @throws IOException
+     */
     private static void parseLine(String line) throws IOException {
 
         if (line.startsWith("#")) {
@@ -62,6 +70,10 @@ public class CasqueConfig {
         }
     }
 
+    /**
+     * load Configurations
+     * @throws CasqueException
+     */
     public static void loadConfig() throws CasqueException {
 
         if (!configLoaded) {

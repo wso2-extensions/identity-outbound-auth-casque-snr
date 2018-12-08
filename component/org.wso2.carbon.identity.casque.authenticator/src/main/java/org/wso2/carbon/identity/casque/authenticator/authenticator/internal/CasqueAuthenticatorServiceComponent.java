@@ -34,6 +34,11 @@ public class CasqueAuthenticatorServiceComponent {
 
     private static Log log = LogFactory.getLog(CasqueAuthenticatorServiceComponent.class);
 
+    /**
+     * This method is to register the Casque authenticator service.
+     *
+     * @param ctxt The Component Context
+     */
     protected void activate(ComponentContext ctxt) {
 
         try {
@@ -48,6 +53,11 @@ public class CasqueAuthenticatorServiceComponent {
         }
     }
 
+    /**
+     * This method is to deactivate the Casque authenticator the service.
+     *
+     * @param ctxt The Component Context
+     */
     protected void deactivate(ComponentContext ctxt) {
 
         if (log.isDebugEnabled()) {
@@ -55,11 +65,21 @@ public class CasqueAuthenticatorServiceComponent {
         }
     }
 
+    /**
+     * TThis method is used to unset the Realm Service.
+     *
+     * @param realmService realmService The Realm Service which needs to unset
+     */
     protected void unsetRealmService(RealmService realmService) {
 
         CasqueAuthenticatorServiceDataHolder.getInstance().setRealmService(null);
     }
 
+    /**
+     * This method is used to set the Realm Service.
+     *
+     * @param realmService The Realm Service which needs to set
+     */
     protected void setRealmService(RealmService realmService) {
 
         CasqueAuthenticatorServiceDataHolder.getInstance().setRealmService(realmService);

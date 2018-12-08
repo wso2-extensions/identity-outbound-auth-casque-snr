@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.13.1</version>
+            <version>${testing.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -162,4 +162,7 @@
             </resource>
         </resources>
     </build>
+    <properties>
+        <testing.version>6.13.1</testing.version>
+    </properties>
 </project>

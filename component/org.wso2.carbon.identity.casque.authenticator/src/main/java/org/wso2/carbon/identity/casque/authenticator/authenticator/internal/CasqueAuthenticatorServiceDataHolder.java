@@ -19,6 +19,9 @@ package org.wso2.carbon.identity.casque.authenticator.authenticator.internal;
 
 import org.wso2.carbon.user.core.service.RealmService;
 
+/**
+ * DataHolder to hold instance.
+ */
 public class CasqueAuthenticatorServiceDataHolder {
 
     private static CasqueAuthenticatorServiceDataHolder instance;

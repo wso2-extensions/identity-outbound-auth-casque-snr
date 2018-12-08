@@ -19,6 +19,9 @@ package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
 
 import java.io.Serializable;
 
+/**
+ * Received response from CASQUE SNR Authenticaticon Server
+ */
 public class RadiusResponse implements Serializable {
 
     private static final long serialVersionUID = 4341535155455223602L;

@@ -107,8 +107,7 @@ public class CasqueAuthenticatorTest {
     @Test(description = "Test case for GetName() method.")
     public void testGetName() {
 
-        Assert.assertEquals(casqueAuthenticator.getName(),
-                CasqueAuthenticatorConstants.AUTHENTICATOR_NAME);
+        Assert.assertEquals(casqueAuthenticator.getName(), CasqueAuthenticatorConstants.AUTHENTICATOR_NAME);
     }
 
     @Test(description = "Test case for RetryAuthenticationEnabled() method.")
@@ -128,7 +127,6 @@ public class CasqueAuthenticatorTest {
     public void testCanHandle() {
 
         Assert.assertTrue(casqueAuthenticator.canHandle(httpServletRequest));
-
     }
 
     @Test(description = "Test case for testGetCasqueTokenId() method.")
@@ -148,7 +146,6 @@ public class CasqueAuthenticatorTest {
                 casqueAuthenticatorServiceDataHolder);
         Assert.assertEquals(Whitebox.invokeMethod(casqueAuthenticator, "getCasqueTokenId"
                 , ""), "FFF 000001");
-
     }
 
     @Test(expectedExceptions = {CasqueException.class})
@@ -166,7 +163,6 @@ public class CasqueAuthenticatorTest {
         when(userStoreManager.getUserClaimValues(anyString(), any(String[].class), anyString())).thenReturn(mockMap);
         when(mockMap.get(anyString())).thenReturn(" ");
         Whitebox.invokeMethod(casqueAuthenticator, "getCasqueTokenId", "");
-
     }
 
     @Test(expectedExceptions = {CasqueException.class})
@@ -182,7 +178,6 @@ public class CasqueAuthenticatorTest {
         when(userStoreManager.getUserClaimValues(anyString(), any(String[].class), anyString())).thenReturn(mockMap);
         when(mockMap.get(anyString())).thenReturn("FFF 0000001");
         Whitebox.invokeMethod(casqueAuthenticator, "getCasqueTokenId", "");
-
     }
 
     @Test(expectedExceptions = {CasqueException.class})
@@ -198,7 +193,6 @@ public class CasqueAuthenticatorTest {
         when(userStoreManager.getUserClaimValues(anyString(), any(String[].class), anyString())).thenReturn(mockMap);
         when(mockMap.get(anyString())).thenReturn(" ");
         Whitebox.invokeMethod(casqueAuthenticator, "getCasqueTokenId", "");
-
     }
 
     @Test(description = "Test case for successful logout request.")
@@ -209,15 +203,12 @@ public class CasqueAuthenticatorTest {
         Assert.assertEquals(status, AuthenticatorFlowStatus.SUCCESS_COMPLETED);
     }
 
-
-
     @Test(description = "Test case for process() method for ForRadiusStateNull()")
     public void testProcessRadiusState5() throws Exception {
 
         mockStatic(CasqueAuthenticatorServiceDataHolder.class);
         mockStatic(IdentityTenantUtil.class);
         mockStatic(Radius.class);
-
         int radiusResponseType = 11;
 
         when(context.isLogoutRequest()).thenReturn(false);
@@ -290,7 +281,6 @@ public class CasqueAuthenticatorTest {
         when((String) context.getProperty(CasqueAuthenticatorConstants.USER_NAME)).thenReturn("casque1");
         when(User.getUserFromUserName(anyString())).thenReturn(user);
         Assert.assertEquals(User.getUserFromUserName(anyString()), user);
-
     }
 
     @Test(description = "Test case for process() method for login fail")

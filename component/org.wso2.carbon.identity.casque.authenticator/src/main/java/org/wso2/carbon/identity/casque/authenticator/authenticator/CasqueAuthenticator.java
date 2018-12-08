@@ -52,10 +52,11 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     private static final AuthPages authPages = new AuthPages();
 
     /**
-     *  Getting tokenId from the UserStoreManager.
-     * @param userName ,
-     * @return ,
-     * @throws CasqueException
+     * Getting tokenId from the UserStoreManager.
+     *
+     * @param userName Username of the user
+     * @return true if token is valid otherwise false
+     * @throws CasqueException UserRealm for user or tenant domain is null
      */
     private String getCasqueTokenId(String userName) throws CasqueException {
 
@@ -76,7 +77,6 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 return tokenId;
             }
             throw new CasqueException(tokenId + "is a bad formatted Token ID for User" + userName);
-
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
             log.info("User Store Exception:" + e.getMessage());
         }
@@ -85,20 +85,16 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
 
     /**
      * Initiate the authentication request
-     * @param request,
-     * @param response,
-     * @param context,
-     * @return
-     * @throws AuthenticationFailedException
-     * @throws CasqueException
+     *
+     * @param request,  http servelet request
+     * @param response, http servelet response
+     * @param context,  Authentication context
      */
     private AuthenticatorFlowStatus start(HttpServletRequest request, HttpServletResponse response,
-                                          AuthenticationContext context)
-            throws AuthenticationFailedException {
+                                          AuthenticationContext context) throws AuthenticationFailedException {
 
         try {
             String userName = request.getParameter(CasqueAuthenticatorConstants.USER_NAME);
-
             if (StringUtils.isEmpty(userName)) {
                 throw new CasqueException("userName is null");
             }
@@ -121,6 +117,9 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 return AuthenticatorFlowStatus.INCOMPLETE;
             }
 
+            /**
+             * clear properties in case another authentication step has set some properties
+             */
             clearProperties(context);
 
             if (radiusResponseType == RadiusResponse.ACCESS_REJECT) {
@@ -142,8 +141,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     @Override
-    public AuthenticatorFlowStatus process(HttpServletRequest request,
-                                           HttpServletResponse response, AuthenticationContext context)
+    public AuthenticatorFlowStatus process(HttpServletRequest request, HttpServletResponse response,
+                                           AuthenticationContext context)
             throws AuthenticationFailedException, LogoutFailedException {
 
         if (context.isLogoutRequest()) {
@@ -164,7 +163,6 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             try {
                 status = start(request, response, context);
             } catch (AuthenticationFailedException e) {
-
                 throw new AuthenticationFailedException("Error Accord while sending request  ", e);
             }
             context.setCurrentAuthenticator(getName());
@@ -196,7 +194,9 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 if (radiusResponseType == RadiusResponse.ACCESS_ACCEPT) { // Authentication Pass.
                     context.setSubject(AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(userName));
                     String tokenId = getCasqueTokenId(userName);
-                    log.debug("CASQUE Authentication PASS for " + userName + "with Token" + tokenId);
+                    if (log.isDebugEnabled()) {
+                        log.debug("CASQUE Authentication PASS for " + userName + "with Token" + tokenId);
+                    }
                     request.setAttribute(FrameworkConstants.REQ_ATTR_HANDLED, true);
                     return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
                 }
@@ -206,10 +206,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                             User.getUserFromUserName(userName));
                 }
 
-                throw new InvalidCredentialsException("User authentication failed due to" +
-                        radiusResponse.getError(),
+                throw new InvalidCredentialsException("User authentication failed due to" + radiusResponse.getError(),
                         User.getUserFromUserName(userName));
-
             } catch (CasqueException ce) {
                 throw new AuthenticationFailedException(ce.getMessage(), ce);
             }

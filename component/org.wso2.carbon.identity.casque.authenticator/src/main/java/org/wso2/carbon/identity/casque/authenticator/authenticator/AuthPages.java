@@ -49,7 +49,7 @@ class AuthPages implements Serializable {
      *
      * @param response Http servlet response
      * @param data     get data from the response
-     * @throws IOException
+     * @throws IOException :
      */
     private void returnResponse(HttpServletResponse response, String data) throws IOException {
 
