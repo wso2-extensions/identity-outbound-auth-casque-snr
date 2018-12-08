@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ~ Copyright (c) 2016 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~ Copyright (c) 2018 WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  ~
  ~ Licensed under the Apache License, Version 2.0 (the "License");
  ~ you may not use this file except in compliance with the License.
@@ -54,9 +54,9 @@
             <version>${identity.framework.version}</version>
         </dependency>
         <dependency>
-	    <groupId>org.wso2.carbon</groupId>
-	    <artifactId>org.wso2.carbon.user.core</artifactId>
-	    <version>${carbon.kernel.version}</version>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.user.core</artifactId>
+            <version>${carbon.kernel.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
@@ -110,7 +110,7 @@
                         <Bundle-Version>${project.version}</Bundle-Version>
                         <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
                         <Import-Package>
-			    org.wso2.carbon.user.core.*;version="${carbon.kernel.version}",
+                            org.wso2.carbon.user.core.*;version="${carbon.kernel.version}",
                             javax.servlet,
                             javax.servlet.http,
                             *;resolution:=optional
