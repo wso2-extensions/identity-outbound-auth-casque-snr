@@ -117,9 +117,6 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 return AuthenticatorFlowStatus.INCOMPLETE;
             }
 
-            /**
-             * clear properties in case another authentication step has set some properties
-             */
             clearProperties(context);
 
             if (radiusResponseType == RadiusResponse.ACCESS_REJECT) {
@@ -134,6 +131,9 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
         }
     }
 
+    /**
+     * clear properties in case another authentication step has set some properties
+     */
     private void clearProperties(AuthenticationContext context) {
 
         Map<String, Object> props = new HashMap<>();

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RadiusPacket.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Casque Authenticator Component</a> &gt; <a href="index.source.html" class="el_package">org.wso2.carbon.identity.casque.authenticator.authenticator.radius</a> &gt; <span class="el_source">RadiusPacket.java</span></div><h1>RadiusPacket.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.casque.authenticator.authenticator.CasqueConfig;
+
+import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+
+/**
+ * Send RADIUS packets to CASQUE SNR Authenticaticon Server
+ */
+public class RadiusPacket implements Serializable {
+
+<span class="nc" id="L34">    private static final Log log = LogFactory.getLog(RadiusPacket.class);</span>
+    private static final long serialVersionUID = 4341535155455223600L;
+    private final static byte USER_NAME = 1;
+    private final static byte USER_PASSWORD = 2;
+    private final static byte SERVICE_TYPE = 6;
+    private final static byte AUTHENTICATE_ONLY = 8;
+    private final static byte REPLY_MESSAGE = 18;
+    private final static byte STATE = 24;
+
+<span class="nc" id="L43">    private static byte[] reqAuth = null;</span>
+<span class="nc" id="L44">    private static byte[] buffer = null;</span>
+<span class="nc" id="L45">    private static SecureRandom random = new SecureRandom();</span>
+<span class="nc" id="L46">    private static MessageDigest md5Digest = null;</span>
+<span class="nc" id="L47">    private static int currentID = 1; //random.nextInt(256);</span>
+
+    static {
+<span class="nc" id="L50">        reqAuth = getRequestAuthenticator();</span>
+<span class="nc" id="L51">        random.setSeed(System.currentTimeMillis());</span>
+<span class="nc" id="L52">        byte[] seed = random.generateSeed(17);</span>
+<span class="nc" id="L53">        random.setSeed(seed);</span>
+<span class="nc" id="L54">    }</span>
+
+<span class="nc" id="L56">    public RadiusPacket() {</span>
+
+<span class="nc" id="L58">    }</span>
+
+    /**
+     * MessageDigest
+     * @return
+     */
+    private static MessageDigest getMD5() {
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (md5Digest == null) {</span>
+            try {
+<span class="nc" id="L68">                md5Digest = MessageDigest.getInstance(&quot;MD5&quot;);</span>
+<span class="nc" id="L69">            } catch (java.security.NoSuchAlgorithmException e) {</span>
+<span class="nc" id="L70">                return null;</span>
+<span class="nc" id="L71">            }</span>
+        }
+
+<span class="nc" id="L74">        MessageDigest md = null;</span>
+        try {
+<span class="nc" id="L76">            md = (MessageDigest) md5Digest.clone();</span>
+<span class="nc" id="L77">        } catch (CloneNotSupportedException e) {</span>
+<span class="nc" id="L78">            log.error(&quot;Error while cloning the message digest. &quot;, e);</span>
+<span class="nc" id="L79">        }</span>
+<span class="nc" id="L80">        return md;</span>
+    }
+
+    private static byte[] getBuffer(int id) {
+
+<span class="nc" id="L85">        byte[] b = new byte[buffer.length];</span>
+<span class="nc" id="L86">        System.arraycopy(buffer, 0, b, 0, buffer.length);</span>
+<span class="nc" id="L87">        b[1] = (byte) (id &amp; 0xff);</span>
+<span class="nc" id="L88">        return b;</span>
+    }
+
+    private static byte getNextID() {
+
+<span class="nc" id="L93">        ++currentID;</span>
+<span class="nc" id="L94">        currentID &amp;= 0xff;</span>
+<span class="nc" id="L95">        return (byte) (currentID &amp; 0xff);</span>
+    }
+
+    public static byte[] getBuffer(int id, byte[] state) {
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (state == null) {</span>
+<span class="nc" id="L101">            return getBuffer(id);</span>
+        }
+<span class="nc" id="L103">        int offset = buffer.length;</span>
+<span class="nc" id="L104">        byte[] b = new byte[offset + state.length + 2];</span>
+<span class="nc" id="L105">        System.arraycopy(buffer, 0, b, 0, offset);</span>
+<span class="nc" id="L106">        offset = addState(b, offset, state);</span>
+<span class="nc" id="L107">        b[1] = (byte) (id &amp; 0xff);</span>
+<span class="nc" id="L108">        b[2] = (byte) ((offset &gt;&gt; 8) &amp; 0xff);</span>
+<span class="nc" id="L109">        b[3] = (byte) (offset &amp; 0xff);</span>
+<span class="nc" id="L110">        return b;</span>
+    }
+
+    private static int addString(byte[] tempBuffer, int offset, String str, byte type) {
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (str == null) return offset;</span>
+<span class="nc" id="L116">        byte[] strBytes = str.getBytes();</span>
+<span class="nc" id="L117">        return addByteArray(tempBuffer, offset, strBytes, type);</span>
+    }
+
+    private static int addByteArray(byte[] tempBuffer, int offset, byte[] array, byte type) {
+
+<span class="nc" id="L122">        int length = array.length;</span>
+<span class="nc" id="L123">        tempBuffer[offset++] = type;                // Attribute type</span>
+<span class="nc" id="L124">        tempBuffer[offset++] = (byte) (length + 2);    // Length of attribute</span>
+<span class="nc" id="L125">        System.arraycopy(array, 0, tempBuffer, offset, length);</span>
+<span class="nc" id="L126">        return offset + length;</span>
+    }
+
+    private static int addUserName(byte[] tempBuffer, int offset, String uid) {
+
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (uid == null) return offset;</span>
+<span class="nc" id="L132">        return addString(tempBuffer, offset, uid, USER_NAME);</span>
+    }
+
+    private static int addPassword(byte[] tempBuffer, int offset, String password) {
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (password == null) return offset;</span>
+
+<span class="nc" id="L139">        byte[] pass = password.getBytes();</span>
+<span class="nc" id="L140">        int passLength = (pass.length + 15) &amp; ~0xf;</span>
+<span class="nc" id="L141">        System.arraycopy(pass, 0, tempBuffer, offset + 2, pass.length);</span>
+<span class="nc" id="L142">        MessageDigest messageDigest = getMD5();</span>
+
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (messageDigest != null) {</span>
+<span class="nc" id="L145">            messageDigest.update(CasqueConfig.radiusSecret);</span>
+<span class="nc" id="L146">            messageDigest.update(tempBuffer, 4, 16);</span>
+
+<span class="nc" id="L148">            byte[] digest = messageDigest.digest();</span>
+<span class="nc" id="L149">            tempBuffer[offset++] = USER_PASSWORD;                // USER_PASSWORD</span>
+<span class="nc" id="L150">            tempBuffer[offset++] = (byte) (passLength + 2);     // Length of USER_PASSWORD attribute</span>
+            int i;
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            for (i = 0; i &lt; 16; i++) {</span>
+<span class="nc" id="L153">                tempBuffer[i + offset] ^= digest[i];</span>
+            }
+<span class="nc bnc" id="L155" title="All 2 branches missed.">            while (i &lt; passLength) {</span>
+<span class="nc" id="L156">                int k = i + offset;</span>
+<span class="nc" id="L157">                messageDigest.reset();</span>
+<span class="nc" id="L158">                messageDigest.update(CasqueConfig.radiusSecret);</span>
+<span class="nc" id="L159">                messageDigest.update(tempBuffer, k - 16, 16);</span>
+<span class="nc" id="L160">                digest = messageDigest.digest();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                for (int j = 0; j &lt; 16; j++) {</span>
+<span class="nc" id="L162">                    tempBuffer[k + j] ^= digest[j];</span>
+                }
+<span class="nc" id="L164">                i += 16;</span>
+<span class="nc" id="L165">            }</span>
+<span class="nc" id="L166">            return offset + passLength;</span>
+        }
+<span class="nc" id="L168">        return -1;</span>
+    }
+
+    private static int addServiceType(byte[] tempBuffer, int offset) {
+
+<span class="nc" id="L173">        tempBuffer[offset++] = SERVICE_TYPE;    // SERVICE_TYPE</span>
+<span class="nc" id="L174">        tempBuffer[offset++] = 6;    // Length of SERVICE_TYPE attribute</span>
+<span class="nc" id="L175">        tempBuffer[offset++] = 0;    //</span>
+<span class="nc" id="L176">        tempBuffer[offset++] = 0;    //</span>
+<span class="nc" id="L177">        tempBuffer[offset++] = 0;    //</span>
+<span class="nc" id="L178">        tempBuffer[offset++] = AUTHENTICATE_ONLY;    // AUTHENTICATE_ONLY</span>
+<span class="nc" id="L179">        return offset;</span>
+    }
+
+    private static int addState(byte[] buf, int offset, byte[] state) {
+
+<span class="nc bnc" id="L184" title="All 2 branches missed.">        if (state == null) return offset;</span>
+<span class="nc" id="L185">        return addByteArray(buf, offset, state, STATE);</span>
+    }
+
+    static byte[] formRequestPacket(String uid, String pass, byte[] state) {
+
+<span class="nc" id="L190">        byte[] tempBuffer = new byte[256];</span>
+<span class="nc" id="L191">        tempBuffer[0] = 1;   // ACCESS_REQUEST;</span>
+<span class="nc" id="L192">        tempBuffer[1] = getNextID();</span>
+<span class="nc" id="L193">        System.arraycopy(reqAuth, 0, tempBuffer, 4, 16);</span>
+<span class="nc" id="L194">        int offset = 20;</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">        if (uid != null &amp;&amp; uid.length() &gt; 0)</span>
+<span class="nc" id="L196">            offset = addUserName(tempBuffer, offset, uid);</span>
+<span class="nc bnc" id="L197" title="All 4 branches missed.">        if (pass != null &amp;&amp; pass.length() &gt; 0)</span>
+<span class="nc" id="L198">            offset = addPassword(tempBuffer, offset, pass);</span>
+<span class="nc bnc" id="L199" title="All 4 branches missed.">        if (state != null &amp;&amp; state.length &gt; 0)</span>
+<span class="nc" id="L200">            offset = addState(tempBuffer, offset, state);</span>
+
+<span class="nc" id="L202">        offset = addServiceType(tempBuffer, offset); //AUTHENTICATE_ONLY</span>
+
+<span class="nc" id="L204">        tempBuffer[2] = (byte) ((offset &gt;&gt; 8) &amp; 0xff);</span>
+<span class="nc" id="L205">        tempBuffer[3] = (byte) (offset &amp; 0xff);</span>
+<span class="nc" id="L206">        byte[] b = new byte[offset];</span>
+<span class="nc" id="L207">        System.arraycopy(tempBuffer, 0, b, 0, offset);</span>
+<span class="nc" id="L208">        return b;</span>
+    }
+
+    private static byte[] getRequestAuthenticator() {
+
+<span class="nc" id="L213">        byte[] r = new byte[16];</span>
+<span class="nc" id="L214">        random.nextBytes(r);</span>
+<span class="nc" id="L215">        return r;</span>
+    }
+
+    private static byte[] getAttribute(int type, byte[][] attributes, byte[] packetData) {
+
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        for (byte[] attribute : attributes) {</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            if (attribute[0] == type) {</span>
+<span class="nc" id="L222">                byte[] att = new byte[(attribute[2] &amp; 0xff)];</span>
+<span class="nc" id="L223">                System.arraycopy(packetData, attribute[1], att, 0, att.length);</span>
+<span class="nc" id="L224">                return att;</span>
+            }
+        }
+<span class="nc" id="L227">        return null;</span>
+    }
+
+    private static void urlEncode(byte[] b) {
+
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (b != null) {</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">            for (int i = 0; i &lt; b.length; ++i) {</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">                if (b[i] == '+') {</span>
+<span class="nc" id="L235">                    b[i] = '-';</span>
+                } else {
+<span class="nc bnc" id="L237" title="All 2 branches missed.">                    if (b[i] == '/') {</span>
+<span class="nc" id="L238">                        b[i] = '_';</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L243">    }</span>
+
+    static RadiusResponse parsePacket(DatagramPacket packet) {
+
+<span class="nc" id="L247">        int packetLength = packet.getLength();</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">        if ((packetLength &lt; 20) || (packetLength &gt; 4096)) {</span>
+<span class="nc" id="L249">            return new RadiusResponse(RadiusResponse.PACKET_LENGTH_ERROR);</span>
+        }
+
+<span class="nc" id="L252">        byte[] tempBuffer = packet.getData();</span>
+<span class="nc" id="L253">        int dataLength = (tempBuffer[2] &amp; 0xff) * 256 + (tempBuffer[3] &amp; 0xff);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (packetLength &lt; dataLength) {</span>
+<span class="nc" id="L255">            return new RadiusResponse(RadiusResponse.PACKET_LENGTH_ERROR);</span>
+        }
+
+<span class="nc" id="L258">        byte[] challenge = null;</span>
+<span class="nc" id="L259">        byte[] state = null;</span>
+<span class="nc" id="L260">        byte[] digest = new byte[16];</span>
+<span class="nc" id="L261">        System.arraycopy(tempBuffer, 4, digest, 0, 16);</span>
+<span class="nc" id="L262">        System.arraycopy(reqAuth, 0, tempBuffer, 4, 16);</span>
+<span class="nc" id="L263">        MessageDigest md = getMD5();</span>
+
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        if (md != null) {</span>
+<span class="nc" id="L266">            md.update(tempBuffer, 0, dataLength);</span>
+<span class="nc" id="L267">            md.update(CasqueConfig.radiusSecret);</span>
+
+<span class="nc" id="L269">            byte[] digest2 = md.digest();</span>
+
+<span class="nc bnc" id="L271" title="All 2 branches missed.">            for (int i = 0; i &lt; 16; i++) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                if (digest[i] != digest2[i]) {</span>
+<span class="nc" id="L273">                    return new RadiusResponse(RadiusResponse.DIGEST_ERROR);</span>
+                }
+            }
+
+<span class="nc" id="L277">            int offset = 20;</span>
+<span class="nc" id="L278">            int index = 0;</span>
+<span class="nc" id="L279">            byte[][] attributes = new byte[16][3];</span>
+
+<span class="nc bnc" id="L281" title="All 4 branches missed.">            while ((offset &lt; dataLength) &amp;&amp; (index &lt; attributes.length)) {</span>
+<span class="nc" id="L282">                attributes[index][0] = tempBuffer[offset];</span>
+<span class="nc" id="L283">                attributes[index][1] = (byte) (offset + 2);</span>
+<span class="nc" id="L284">                int l = (tempBuffer[offset + 1] &amp; 0xff);</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                if (l &lt; 2) {</span>
+<span class="nc" id="L286">                    return new RadiusResponse(RadiusResponse.ATTRIBUTE_ERROR);</span>
+                }
+<span class="nc" id="L288">                attributes[index][2] = (byte) (l - 2);</span>
+<span class="nc" id="L289">                offset += l;</span>
+<span class="nc" id="L290">                index++;</span>
+<span class="nc" id="L291">            }</span>
+
+<span class="nc" id="L293">            challenge = getAttribute(REPLY_MESSAGE, attributes, tempBuffer);</span>
+<span class="nc" id="L294">            urlEncode(challenge);</span>
+<span class="nc" id="L295">            state = getAttribute(STATE, attributes, tempBuffer);</span>
+        }
+<span class="nc" id="L297">        return new RadiusResponse(tempBuffer[0], challenge, state);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
