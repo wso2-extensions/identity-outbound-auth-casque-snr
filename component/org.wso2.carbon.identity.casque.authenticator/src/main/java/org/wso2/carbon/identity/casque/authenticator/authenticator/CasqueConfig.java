@@ -42,6 +42,7 @@ public class CasqueConfig {
 
     /**
      * Configuration line readings
+     *
      * @param line ,
      * @throws IOException
      */
@@ -49,22 +50,15 @@ public class CasqueConfig {
 
         if (line.startsWith("#")) {
             return;
-        }
-        if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET)) {
+        } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET)) {
             radiusSecret = line.substring(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET.length()).trim().getBytes();
-            return;
-        }
-        if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_ADDRESS)) {
+        } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_ADDRESS)) {
             String server = line.substring(CasqueAuthenticatorConstants.CONF_CASQUE_ADDRESS.length()).trim();
             casqueAddress = InetAddress.getByName(server);
-            return;
-        }
-        if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_PORT)) {
+        } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_PORT)) {
             String port = line.substring(CasqueAuthenticatorConstants.CONF_CASQUE_PORT.length()).trim();
             casquePort = Integer.parseInt(port);
-            return;
-        }
-        if (line.startsWith(CasqueAuthenticatorConstants.CONF_LOCAL_PORT)) {
+        } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_LOCAL_PORT)) {
             String port = line.substring(CasqueAuthenticatorConstants.CONF_LOCAL_PORT.length()).trim();
             localPort = Integer.parseInt(port);
         }
@@ -72,21 +66,22 @@ public class CasqueConfig {
 
     /**
      * load Configurations
+     *
      * @throws CasqueException
      */
     public static void loadConfig() throws CasqueException {
 
         if (!configLoaded) {
-            try {
-                File casqueConf = new File(CarbonUtils.getCarbonConfigDirPath() + File.separator
-                        + CasqueAuthenticatorConstants.CONF_FILE);
-                InputStream in = new FileInputStream(casqueConf);
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            File casqueConf = new File(CarbonUtils.getCarbonConfigDirPath() + File.separator
+                    + CasqueAuthenticatorConstants.CONF_FILE);
+
+            try (InputStream input = new FileInputStream(casqueConf);
+                 BufferedReader bufferedInput = new BufferedReader(new InputStreamReader(input))
+            ) {
                 String line;
-                while ((line = br.readLine()) != null) {
+                while ((line = bufferedInput.readLine()) != null) {
                     parseLine(line);
                 }
-                br.close();
                 configLoaded = true;
             } catch (IOException e) {
                 throw new CasqueException(" Failed to load Config file " + e.getMessage());

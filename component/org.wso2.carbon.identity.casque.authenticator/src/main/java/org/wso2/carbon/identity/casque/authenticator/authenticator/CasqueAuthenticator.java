@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.I
 import org.wso2.carbon.identity.application.authentication.framework.exception.LogoutFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -163,7 +164,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             try {
                 status = start(request, response, context);
             } catch (AuthenticationFailedException e) {
-                throw new AuthenticationFailedException("Error Accord while sending request  ", e);
+                throw new AuthenticationFailedException("Authentication failed Accord while sending request  ", e);
             }
             context.setCurrentAuthenticator(getName());
             return status;
@@ -172,7 +173,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
         context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
 
         String action = request.getParameter(CasqueAuthenticatorConstants.BTN_ACTION);
-        if (action != null && "Login".equals(action)) { // action can be null, Login or Cancel
+        if (StringUtils.isNotEmpty(action) && "Login".equals(action)) { // action can be null, Login or Cancel
 
             String userName = (String) context.getProperty(CasqueAuthenticatorConstants.USER_NAME);
             String challengeResponse = request.getParameter(CasqueAuthenticatorConstants.RESPONSE);
@@ -201,7 +202,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                     return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
                 }
 
-                if (radiusResponseType == RadiusResponse.ACCESS_REJECT) { // Authentication Failed.
+                else if (radiusResponseType == RadiusResponse.ACCESS_REJECT) { // Authentication Failed.
                     throw new InvalidCredentialsException("User authentication failed due to invalid credentials",
                             User.getUserFromUserName(userName));
                 }

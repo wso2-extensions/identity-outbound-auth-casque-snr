@@ -17,6 +17,7 @@
  */
 package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.CasqueConfig;
@@ -112,7 +113,7 @@ public class RadiusPacket implements Serializable {
 
     private static int addString(byte[] tempBuffer, int offset, String str, byte type) {
 
-        if (str == null) return offset;
+        if (StringUtils.isEmpty(str)) return offset;
         byte[] strBytes = str.getBytes();
         return addByteArray(tempBuffer, offset, strBytes, type);
     }
@@ -128,13 +129,13 @@ public class RadiusPacket implements Serializable {
 
     private static int addUserName(byte[] tempBuffer, int offset, String uid) {
 
-        if (uid == null) return offset;
+        if (StringUtils.isEmpty(uid)) return offset;
         return addString(tempBuffer, offset, uid, USER_NAME);
     }
 
     private static int addPassword(byte[] tempBuffer, int offset, String password) {
 
-        if (password == null) return offset;
+        if (StringUtils.isEmpty(password)) return offset;
 
         byte[] pass = password.getBytes();
         int passLength = (pass.length + 15) & ~0xf;
@@ -192,7 +193,7 @@ public class RadiusPacket implements Serializable {
         tempBuffer[1] = getNextID();
         System.arraycopy(reqAuth, 0, tempBuffer, 4, 16);
         int offset = 20;
-        if (uid != null && uid.length() > 0)
+        if (StringUtils.isNotEmpty(uid) && uid.length() > 0)
             offset = addUserName(tempBuffer, offset, uid);
         if (pass != null && pass.length() > 0)
             offset = addPassword(tempBuffer, offset, pass);

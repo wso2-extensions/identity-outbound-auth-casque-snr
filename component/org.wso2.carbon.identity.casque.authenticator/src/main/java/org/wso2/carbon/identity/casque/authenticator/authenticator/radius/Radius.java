@@ -72,6 +72,7 @@ public class Radius implements Serializable {
                 socket.receive(responsePacket);
                 return RadiusPacket.parsePacket(responsePacket);
             } catch (IOException ioe) {
+                log.error("Error in Datagram responsePacket",ioe);
             }
         }
         log.info("Error contacting the CASQUE SNR Server");

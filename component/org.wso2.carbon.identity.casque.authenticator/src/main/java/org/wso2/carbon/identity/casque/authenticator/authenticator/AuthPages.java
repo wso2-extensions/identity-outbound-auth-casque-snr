@@ -92,9 +92,9 @@ class AuthPages implements Serializable {
      */
     private String loadResource(String path) throws CasqueException {
 
-        InputStream in = AuthPages.class.getClassLoader().getResourceAsStream(path);
-        if (in != null) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+        InputStream input = AuthPages.class.getClassLoader().getResourceAsStream(path);
+        if (input != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 char[] buffer = new char[20000];
                 int len = reader.read(buffer, 0, 20000);
                 return new String(buffer, 0, len);
