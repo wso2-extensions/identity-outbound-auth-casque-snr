@@ -29,7 +29,6 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.I
 import org.wso2.carbon.identity.application.authentication.framework.exception.LogoutFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants;
-import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -71,15 +70,15 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                     new String[]{CASQUE_SNR_CLAIM}, null);
 
             if (tokenIdMap == null || tokenIdMap.get(CASQUE_SNR_CLAIM) == null) {
-                throw new CasqueException("Token ID is null for user:" + userName);
+                throw new CasqueException("Token ID is null for user: " + userName);
             }
             String tokenId = tokenIdMap.get(CASQUE_SNR_CLAIM);
             if (tokenId.matches(TOKEN_ID_FORMAT)) {
                 return tokenId;
             }
-            throw new CasqueException(tokenId + "is a bad formatted Token ID for User" + userName);
+            throw new CasqueException(tokenId + "is a bad formatted Token ID for user :" + userName);
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
-            log.info("User Store Exception:" + e.getMessage());
+            log.error("User Store Exception:" + e.getMessage());
         }
         throw new CasqueException("Unable to get token id for user: " + userName);
     }
@@ -128,7 +127,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             throw new InvalidCredentialsException(" User authentication failed due to " + radiusResponse.getError(),
                     User.getUserFromUserName(userName));
         } catch (CasqueException ce) {
-            throw new AuthenticationFailedException(ce.getMessage(), ce);
+            throw new AuthenticationFailedException("Unable to start the authentication process", ce);
         }
     }
 
@@ -151,12 +150,11 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 processLogoutResponse(request, response, context);
             } catch (UnsupportedOperationException e) {
                 if (log.isDebugEnabled()) {
-                    log.error("Ignoring UnsupportedOperationException", e);
+                    log.debug("Ignoring UnsupportedOperationException", e);
                 }
             }
             return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
         }
-
         byte[] radiusState = (byte[]) context.getProperty(CasqueAuthenticatorConstants.RADIUS_STATE);
 
         if (radiusState == null) { // Initial request, get a challenge
@@ -164,7 +162,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             try {
                 status = start(request, response, context);
             } catch (AuthenticationFailedException e) {
-                throw new AuthenticationFailedException("Authentication failed Accord while sending request  ", e);
+                throw new AuthenticationFailedException("Authentication failed Accord while sending request ", e);
             }
             context.setCurrentAuthenticator(getName());
             return status;
@@ -173,7 +171,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
         context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
 
         String action = request.getParameter(CasqueAuthenticatorConstants.BTN_ACTION);
-        if (StringUtils.isNotEmpty(action) && "Login".equals(action)) { // action can be null, Login or Cancel
+        if (StringUtils.isNotEmpty(action) && CasqueAuthenticatorConstants.Login.equals(action)) { // action can be null, Login or Cancel
 
             String userName = (String) context.getProperty(CasqueAuthenticatorConstants.USER_NAME);
             String challengeResponse = request.getParameter(CasqueAuthenticatorConstants.RESPONSE);
@@ -194,15 +192,9 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
 
                 if (radiusResponseType == RadiusResponse.ACCESS_ACCEPT) { // Authentication Pass.
                     context.setSubject(AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(userName));
-                    String tokenId = getCasqueTokenId(userName);
-                    if (log.isDebugEnabled()) {
-                        log.debug("CASQUE Authentication PASS for " + userName + "with Token" + tokenId);
-                    }
                     request.setAttribute(FrameworkConstants.REQ_ATTR_HANDLED, true);
                     return AuthenticatorFlowStatus.SUCCESS_COMPLETED;
-                }
-
-                else if (radiusResponseType == RadiusResponse.ACCESS_REJECT) { // Authentication Failed.
+                } else if (radiusResponseType == RadiusResponse.ACCESS_REJECT) { // Authentication Failed.
                     throw new InvalidCredentialsException("User authentication failed due to invalid credentials",
                             User.getUserFromUserName(userName));
                 }
@@ -210,7 +202,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                 throw new InvalidCredentialsException("User authentication failed due to" + radiusResponse.getError(),
                         User.getUserFromUserName(userName));
             } catch (CasqueException ce) {
-                throw new AuthenticationFailedException(ce.getMessage(), ce);
+                throw new AuthenticationFailedException("Unable to continue the authentication process ", ce);
             }
         }
 
@@ -220,7 +212,6 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     @Override
     protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) throws AuthenticationFailedException {
-
     }
 
     @Override
@@ -228,7 +219,6 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                                                  HttpServletResponse response,
                                                  AuthenticationContext context)
             throws AuthenticationFailedException {
-
     }
 
     @Override

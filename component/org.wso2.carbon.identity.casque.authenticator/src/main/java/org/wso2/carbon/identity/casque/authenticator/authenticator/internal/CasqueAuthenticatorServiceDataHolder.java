@@ -31,6 +31,11 @@ public class CasqueAuthenticatorServiceDataHolder {
 
     }
 
+    /**
+     * Use to get Instance
+     *
+     * @return ,
+     */
     public static CasqueAuthenticatorServiceDataHolder getInstance() {
 
         if (instance == null) {
@@ -39,11 +44,21 @@ public class CasqueAuthenticatorServiceDataHolder {
         return instance;
     }
 
+    /**
+     * Use to get Realm Service
+     *
+     * @return ,
+     */
     public RealmService getRealmService() {
 
         return realmService;
     }
 
+    /**
+     * Use to set Realm Service
+     *
+     * @param realmService ,
+     */
     public void setRealmService(RealmService realmService) {
 
         this.realmService = realmService;

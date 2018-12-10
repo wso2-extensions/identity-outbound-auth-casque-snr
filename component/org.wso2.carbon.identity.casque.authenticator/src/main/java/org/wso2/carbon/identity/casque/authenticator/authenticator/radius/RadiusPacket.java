@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.CasqueConfig;
+import org.wso2.carbon.identity.casque.authenticator.constants.CasqueAuthenticatorConstants;
 
 import java.io.Serializable;
 import java.net.DatagramPacket;
@@ -66,8 +67,9 @@ public class RadiusPacket implements Serializable {
 
         if (md5Digest == null) {
             try {
-                md5Digest = MessageDigest.getInstance("MD5");
+                md5Digest = MessageDigest.getInstance(CasqueAuthenticatorConstants.MD5);
             } catch (java.security.NoSuchAlgorithmException e) {
+                log.error("Error while get Instance. ", e);
                 return null;
             }
         }

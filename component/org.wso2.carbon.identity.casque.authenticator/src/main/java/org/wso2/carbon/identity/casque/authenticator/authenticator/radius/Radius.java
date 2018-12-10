@@ -58,7 +58,7 @@ public class Radius implements Serializable {
                 socket.setSoTimeout(1000);
             }
         } catch (SocketException e) {
-            throw new CasqueException("Error creating the Datagram Socket. " + e.getMessage());
+            throw new CasqueException("Error creating the Datagram Socket. ", e);
         }
         DatagramPacket responsePacket;
         int tries = 3;
@@ -72,10 +72,10 @@ public class Radius implements Serializable {
                 socket.receive(responsePacket);
                 return RadiusPacket.parsePacket(responsePacket);
             } catch (IOException ioe) {
-                log.error("Error in Datagram responsePacket",ioe);
+                log.error("Could not get the Datagram responsePacket",ioe);
             }
         }
-        log.info("Error contacting the CASQUE SNR Server");
+        log.error("Error contacting the CASQUE SNR Server");
         return new RadiusResponse(RadiusResponse.RADIUS_ERROR);
     }
 }

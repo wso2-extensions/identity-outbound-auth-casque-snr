@@ -18,6 +18,7 @@
 package org.wso2.carbon.identity.casque.authenticator.authenticator;
 
 import org.mockito.Mock;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.testng.Assert;
 import org.testng.IObjectFactory;
 import org.testng.annotations.Test;
@@ -40,11 +41,13 @@ import org.wso2.carbon.identity.application.authentication.framework.model.Authe
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.internal.CasqueAuthenticatorServiceDataHolder;
 
+import java.io.InputStream;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -53,7 +56,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @PrepareForTest({CasqueAuthenticatorServiceDataHolder.class, IdentityTenantUtil.class, RadiusResponse.class,
         Radius.class, AuthenticatedUser.class, User.class})
-
 public class CasqueAuthenticatorTest {
 
     @ObjectFactory
@@ -96,6 +98,10 @@ public class CasqueAuthenticatorTest {
 
     @Mock
     private Map mockMap;
+   
+
+//    @Mock
+//    private AuthPages authPages;
 
     @BeforeMethod
     public void setUp() {
@@ -201,32 +207,6 @@ public class CasqueAuthenticatorTest {
         when(context.isLogoutRequest()).thenReturn(true);
         AuthenticatorFlowStatus status = casqueAuthenticator.process(httpServletRequest, httpServletResponse, context);
         Assert.assertEquals(status, AuthenticatorFlowStatus.SUCCESS_COMPLETED);
-    }
-
-    @Test(description = "Test case for process() method for ForRadiusStateNull()")
-    public void testProcessRadiusState5() throws Exception {
-
-        mockStatic(CasqueAuthenticatorServiceDataHolder.class);
-        mockStatic(IdentityTenantUtil.class);
-        mockStatic(Radius.class);
-        int radiusResponseType = 11;
-
-        when(context.isLogoutRequest()).thenReturn(false);
-        when(context.getProperty(anyString())).thenReturn(null);
-        when(CasqueAuthenticatorServiceDataHolder.getInstance()).thenReturn(casqueAuthenticatorServiceDataHolder);
-        when(casqueAuthenticatorServiceDataHolder.getRealmService()).thenReturn(realmService);
-        when(realmService.getTenantUserRealm(IdentityTenantUtil.getTenantIdOfUser(anyString())))
-                .thenReturn(tenantUserRealm);
-        when(tenantUserRealm.getUserStoreManager()).thenReturn(userStoreManager);
-        when(userStoreManager.getUserClaimValues(anyString(), any(String[].class), anyString())).thenReturn(mockMap);
-        when(mockMap.get(anyString())).thenReturn("FFF 000001");
-        when(httpServletRequest.getParameter(anyString())).thenReturn("Login");
-        when(context.getProperty(CasqueAuthenticatorConstants.USER_NAME)).thenReturn("casque1");
-        when(httpServletRequest.getParameter(CasqueAuthenticatorConstants.RESPONSE)).thenReturn("ACCESS_CHALLENGE ");
-        when(Radius.sendRequest(anyString(), anyString(), (byte[]) anyObject())).thenReturn(radiusResponse);
-        when(radiusResponse.getType()).thenReturn(radiusResponseType);
-        AuthenticatorFlowStatus status = casqueAuthenticator.process(httpServletRequest, httpServletResponse, context);
-        Assert.assertEquals(status, AuthenticatorFlowStatus.INCOMPLETE);
     }
 
     @Test(description = "Test case for process() method for Authentication Pass.")

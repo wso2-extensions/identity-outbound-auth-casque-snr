@@ -17,6 +17,7 @@
  */
 package org.wso2.carbon.identity.casque.authenticator.authenticator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.radius.RadiusPacket;
@@ -53,8 +54,8 @@ class AuthPages implements Serializable {
      */
     private void returnResponse(HttpServletResponse response, String data) throws IOException {
 
-        response.addHeader(CasqueAuthenticatorConstants.CACHE_CONTROL, "no-cache");
-        response.addHeader(CasqueAuthenticatorConstants.PRAGMA, "no-cache");
+        response.addHeader(CasqueAuthenticatorConstants.CACHE_CONTROL, CasqueAuthenticatorConstants.NoCache);
+        response.addHeader(CasqueAuthenticatorConstants.PRAGMA, CasqueAuthenticatorConstants.NoCache);
         response.addHeader(CasqueAuthenticatorConstants.EXPIRES, "0");
         response.setContentLength(data.length());
         response.getOutputStream().print(data);
@@ -63,8 +64,8 @@ class AuthPages implements Serializable {
     /**
      * load the challengPage
      *
-     * @param response       http servelet request
-     * @param sessionDataKey ,
+     * @param response       http servelet response
+     * @param sessionDataKey sessionDataKey
      * @param challenge      challenge for QR_Player
      * @throws CasqueException
      */
@@ -72,12 +73,12 @@ class AuthPages implements Serializable {
 
         try {
             String resource = loadResource(CasqueAuthenticatorConstants.QR_PLAYER);
-            if (resource != null) {
+            if (StringUtils.isNotEmpty(resource)) {
                 resource = resource.replace(CasqueAuthenticatorConstants.CASQUE_CHALLENGE, challenge);
                 resource = resource.replace(CasqueAuthenticatorConstants.SESSION_DATA_KEY, sessionDataKey);
                 returnHtmlResponse(response, resource);
             } else {
-                log.error("QR player resources are not available");
+                throw new CasqueException("QR player resources are not available.");
             }
         } catch (IOException e) {
             throw new CasqueException("Failed to load the challenge page.", e);
@@ -91,7 +92,6 @@ class AuthPages implements Serializable {
      * @throws CasqueException
      */
     private String loadResource(String path) throws CasqueException {
-
         InputStream input = AuthPages.class.getClassLoader().getResourceAsStream(path);
         if (input != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {

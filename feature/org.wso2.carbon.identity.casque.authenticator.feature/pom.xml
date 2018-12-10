@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.wso2.carbon.identity.casque.authenticator</groupId>
         <artifactId>casque-authenticator</artifactId>
-        <version>1.1.0</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -51,9 +51,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                                <delete dir="src/main/resources" />
-                                <delete dir="src/main" />
-                                <delete dir="src" />
+                                <delete dir="src/main/resources"/>
+                                <delete dir="src/main"/>
+                                <delete dir="src"/>
                             </tasks>
                         </configuration>
                         <goals>
@@ -64,5 +64,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

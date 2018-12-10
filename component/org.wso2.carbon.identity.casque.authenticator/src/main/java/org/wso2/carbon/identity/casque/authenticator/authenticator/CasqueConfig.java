@@ -43,12 +43,12 @@ public class CasqueConfig {
     /**
      * Configuration line readings
      *
-     * @param line ,
+     * @param line configuration line
      * @throws IOException
      */
     private static void parseLine(String line) throws IOException {
 
-        if (line.startsWith("#")) {
+        if (line.startsWith(CasqueAuthenticatorConstants.Hash)) {
             return;
         } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET)) {
             radiusSecret = line.substring(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET.length()).trim().getBytes();
@@ -84,7 +84,7 @@ public class CasqueConfig {
                 }
                 configLoaded = true;
             } catch (IOException e) {
-                throw new CasqueException(" Failed to load Config file " + e.getMessage());
+                throw new CasqueException(" Failed to load Config file ", e);
             }
         }
     }
