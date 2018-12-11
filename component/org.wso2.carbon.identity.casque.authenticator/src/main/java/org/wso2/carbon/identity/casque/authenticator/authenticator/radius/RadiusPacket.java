@@ -29,7 +29,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 
 /**
- * Send RADIUS packets to CASQUE SNR Authenticaticon Server
+ * Send RADIUS packets to CASQUE SNR Authentication Server
  */
 public class RadiusPacket implements Serializable {
 
@@ -61,7 +61,7 @@ public class RadiusPacket implements Serializable {
 
     /**
      * MessageDigest
-     * @return
+     * @return md5
      */
     private static MessageDigest getMD5() {
 

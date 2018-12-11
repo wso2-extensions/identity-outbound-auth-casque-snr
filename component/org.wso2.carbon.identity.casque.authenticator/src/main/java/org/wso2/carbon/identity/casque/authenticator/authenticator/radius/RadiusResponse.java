@@ -20,7 +20,7 @@ package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
 import java.io.Serializable;
 
 /**
- * Received response from CASQUE SNR Authenticaticon Server
+ * Received response from CASQUE SNR Authentication Server
  */
 public class RadiusResponse implements Serializable {
 

@@ -43,6 +43,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ *
+ */
 public class CasqueAuthenticator extends AbstractApplicationAuthenticator implements LocalApplicationAuthenticator {
 
     private static final long serialVersionUID = 4341535155455223654L;
@@ -76,7 +79,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             if (tokenId.matches(TOKEN_ID_FORMAT)) {
                 return tokenId;
             }
-            throw new CasqueException(tokenId + "is a bad formatted Token ID for user :" + userName);
+            throw new CasqueException(String.format("%s is a bad formatted Token ID for user : %s", tokenId, userName));
+
         } catch (org.wso2.carbon.user.api.UserStoreException e) {
             log.error("User Store Exception:" + e.getMessage());
         }
@@ -86,8 +90,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     /**
      * Initiate the authentication request
      *
-     * @param request,  http servelet request
-     * @param response, http servelet response
+     * @param request,  http servlet request
+     * @param response, http servlet response
      * @param context,  Authentication context
      */
     private AuthenticatorFlowStatus start(HttpServletRequest request, HttpServletResponse response,
@@ -212,6 +216,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     @Override
     protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) throws AuthenticationFailedException {
+
     }
 
     @Override
@@ -219,6 +224,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                                                  HttpServletResponse response,
                                                  AuthenticationContext context)
             throws AuthenticationFailedException {
+
     }
 
     @Override

@@ -84,7 +84,7 @@ public class CasqueConfig {
                 }
                 configLoaded = true;
             } catch (IOException e) {
-                throw new CasqueException(" Failed to load Config file ", e);
+                throw new CasqueException(" Failed to load casque.conf file ", e);
             }
         }
     }

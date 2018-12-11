@@ -32,13 +32,19 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This Class Load the ChallengPage and QR player
+ * This Class Load the ChallengePage and QR player
  */
 class AuthPages implements Serializable {
 
     private static final long serialVersionUID = 4341535155455223655L;
     private static final Log log = LogFactory.getLog(RadiusPacket.class);
 
+    /**
+     * Return the HtmlResponse
+     * @param response
+     * @param data
+     * @throws IOException
+     */
     private void returnHtmlResponse(HttpServletResponse response, String data) throws IOException {
 
         response.setContentType(CasqueAuthenticatorConstants.CONTENT_TYPE);
@@ -62,9 +68,9 @@ class AuthPages implements Serializable {
     }
 
     /**
-     * load the challengPage
+     * load the challengePage
      *
-     * @param response       http servelet response
+     * @param response       http servlet response
      * @param sessionDataKey sessionDataKey
      * @param challenge      challenge for QR_Player
      * @throws CasqueException

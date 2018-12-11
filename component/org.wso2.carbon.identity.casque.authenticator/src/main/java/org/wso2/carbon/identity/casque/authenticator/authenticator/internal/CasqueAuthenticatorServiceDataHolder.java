@@ -34,7 +34,7 @@ public class CasqueAuthenticatorServiceDataHolder {
     /**
      * Use to get Instance
      *
-     * @return ,
+     * @return instance
      */
     public static CasqueAuthenticatorServiceDataHolder getInstance() {
 
@@ -47,7 +47,7 @@ public class CasqueAuthenticatorServiceDataHolder {
     /**
      * Use to get Realm Service
      *
-     * @return ,
+     * @return realmService
      */
     public RealmService getRealmService() {
 
@@ -57,7 +57,7 @@ public class CasqueAuthenticatorServiceDataHolder {
     /**
      * Use to set Realm Service
      *
-     * @param realmService ,
+     * @param realmService Realm Service to be set
      */
     public void setRealmService(RealmService realmService) {
 

@@ -18,7 +18,6 @@
 package org.wso2.carbon.identity.casque.authenticator.authenticator;
 
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.testng.Assert;
 import org.testng.IObjectFactory;
 import org.testng.annotations.Test;
@@ -41,13 +40,11 @@ import org.wso2.carbon.identity.application.authentication.framework.model.Authe
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.internal.CasqueAuthenticatorServiceDataHolder;
 
-import java.io.InputStream;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -98,10 +95,6 @@ public class CasqueAuthenticatorTest {
 
     @Mock
     private Map mockMap;
-   
-
-//    @Mock
-//    private AuthPages authPages;
 
     @BeforeMethod
     public void setUp() {
