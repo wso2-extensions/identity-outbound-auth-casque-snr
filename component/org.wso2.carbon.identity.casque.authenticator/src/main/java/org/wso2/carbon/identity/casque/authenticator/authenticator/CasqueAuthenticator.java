@@ -220,8 +220,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     @Override
-    protected void processAuthenticationResponse(HttpServletRequest request,
-                                                 HttpServletResponse response,
+    protected void processAuthenticationResponse(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context)
             throws AuthenticationFailedException {
 
