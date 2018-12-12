@@ -38,13 +38,15 @@ import org.wso2.carbon.identity.casque.authenticator.exception.CasqueException;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.radius.Radius;
 import org.wso2.carbon.identity.casque.authenticator.authenticator.radius.RadiusResponse;
 
-import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * CASQUE Authenticator main class.
+ * Sends the user name and token Id to the CASQUE SNR Server using RADIUS protocol
+ * to get the challenge and also return the response.
+ * Authentication is a PASS for a valid response to the challenge.
  */
 public class CasqueAuthenticator extends AbstractApplicationAuthenticator implements LocalApplicationAuthenticator {
 
@@ -55,10 +57,11 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     private static final AuthPages authPages = new AuthPages();
 
     /**
-     * Getting tokenId from the UserStoreManager.
+     * Get the users tokenId from the UserStoreManager.
+     * Check the format of the tokenId, 3 hex chars, a space then 6 numeric digits.
      *
      * @param userName Username of the user
-     * @return true if token is valid otherwise false
+     * @return @return the CASQUE Token ID
      * @throws CasqueException UserRealm for user or tenant domain is null
      */
     private String getCasqueTokenId(String userName) throws CasqueException {
@@ -136,12 +139,12 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     /**
-     * clear properties in case another authentication step has set some properties
+     * clean up the properties we set: RADIUS_STATE and USER_NAME
      */
     private void clearProperties(AuthenticationContext context) {
 
-        Map<String, Object> props = new HashMap<>();
-        context.setProperties(props);
+        context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
+        context.setProperty(CasqueAuthenticatorConstants.USER_NAME, null);
     }
 
     @Override

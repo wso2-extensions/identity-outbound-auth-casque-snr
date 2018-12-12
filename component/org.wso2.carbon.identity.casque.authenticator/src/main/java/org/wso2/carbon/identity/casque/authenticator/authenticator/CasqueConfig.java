@@ -30,25 +30,25 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 /**
- * CASQUE SNR Authenticator Configurations
+ * CASQUE SNR Authenticator Configuration
  */
 public class CasqueConfig {
 
-    public static byte[] radiusSecret = null;
-    public static InetAddress casqueAddress = null;
-    public static int casquePort = 0;
-    public static int localPort = 0;
-    private static boolean configLoaded = false;
+    public static byte[] radiusSecret = null;      /* Shared secret between the authenticator and the CASQUE Server. */
+    public static InetAddress casqueAddress = null;/* IP Address of the CASQUE SNR Server. */
+    public static int casquePort = 0;              /* Port used by the CASQUE SNR Server. */
+    public static int localPort = 0;               /* Port for the CasqueAuthenticator to use. */
+    private static boolean configLoaded = false;   /* True if the configuration has been loaded. */
 
     /**
-     * Configuration line readings
+     * Parse a configuration line
      *
-     * @param line configuration line
+     * @param line the line to parse
      * @throws IOException
      */
     private static void parseLine(String line) throws IOException {
 
-        if (line.startsWith(CasqueAuthenticatorConstants.Hash)) {
+        if (line.startsWith(CasqueAuthenticatorConstants.HASH)) {
             return;
         } else if (line.startsWith(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET)) {
             radiusSecret = line.substring(CasqueAuthenticatorConstants.CONF_CASQUE_SECRET.length()).trim().getBytes();
@@ -65,7 +65,7 @@ public class CasqueConfig {
     }
 
     /**
-     * load Configurations
+     * Load the Configuration file, casque.conf
      *
      * @throws CasqueException
      */

@@ -29,7 +29,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 /**
- * Send request to CASQUE SNR Authentication Server to get RADIUS packets
+ * Communicate with the CASQUE SNR Authentication Server using the RADIUS protocol
  */
 public class Radius implements Serializable {
 
@@ -38,11 +38,11 @@ public class Radius implements Serializable {
     private static DatagramSocket socket = null;
 
     /**
-     * Send Reques to CASQUE SNR Authentication Server
-     * @param uid
-     * @param pass
-     * @param state
-     * @return RadiusResponse
+     * Send Send Request to CASQUE SNR Authentication Server
+     * @param uid the user name to send
+     * @param pass the password to send
+     * @param state the RADIUS state value to send
+     * @return Challenge, Accept, Reject or an Error.
      * @throws CasqueException throws CasqueException If DatagramSocket creation fails
      */
     public static RadiusResponse sendRequest(String uid, String pass, byte[] state) throws CasqueException {

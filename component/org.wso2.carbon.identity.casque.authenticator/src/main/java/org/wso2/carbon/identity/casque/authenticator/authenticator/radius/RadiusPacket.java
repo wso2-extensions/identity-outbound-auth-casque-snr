@@ -29,7 +29,10 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 
 /**
- * Send RADIUS packets to CASQUE SNR Authentication Server
+ * RadiusPacket class.
+ * Builds radius request packets with user name, password and state value.
+ * Parses the response packets to get the result or a challenge and state value.
+ * The state value must be returned with the response to the challenge.
  */
 public class RadiusPacket implements Serializable {
 
@@ -46,7 +49,7 @@ public class RadiusPacket implements Serializable {
     private static byte[] buffer = null;
     private static SecureRandom random = new SecureRandom();
     private static MessageDigest md5Digest = null;
-    private static int currentID = 1; //random.nextInt(256);
+    private static int currentID = 1;
 
     static {
         reqAuth = getRequestAuthenticator();
@@ -55,13 +58,18 @@ public class RadiusPacket implements Serializable {
         random.setSeed(seed);
     }
 
+    /**
+     * Constructor
+     */
     public RadiusPacket() {
 
+        reqAuth = getRequestAuthenticator();
     }
 
     /**
-     * MessageDigest
-     * @return md5
+     * Get MD5 message digest.
+     *
+     * @return MD5 message digest object.
      */
     private static MessageDigest getMD5() {
 
@@ -69,7 +77,7 @@ public class RadiusPacket implements Serializable {
             try {
                 md5Digest = MessageDigest.getInstance(CasqueAuthenticatorConstants.MD5);
             } catch (java.security.NoSuchAlgorithmException e) {
-                log.error("Error while get Instance. ", e);
+                log.error("Error while getting an MD5 Instance. ", e);
                 return null;
             }
         }
@@ -83,6 +91,12 @@ public class RadiusPacket implements Serializable {
         return md;
     }
 
+    /**
+     * Use to get Buffer
+     *
+     * @param id id value
+     * @return b
+     */
     private static byte[] getBuffer(int id) {
 
         byte[] b = new byte[buffer.length];
@@ -91,6 +105,11 @@ public class RadiusPacket implements Serializable {
         return b;
     }
 
+    /**
+     * Get the next RADIUS packet id.
+     *
+     * @return the next id.
+     */
     private static byte getNextID() {
 
         ++currentID;
@@ -98,21 +117,15 @@ public class RadiusPacket implements Serializable {
         return (byte) (currentID & 0xff);
     }
 
-    public static byte[] getBuffer(int id, byte[] state) {
-
-        if (state == null) {
-            return getBuffer(id);
-        }
-        int offset = buffer.length;
-        byte[] b = new byte[offset + state.length + 2];
-        System.arraycopy(buffer, 0, b, 0, offset);
-        offset = addState(b, offset, state);
-        b[1] = (byte) (id & 0xff);
-        b[2] = (byte) ((offset >> 8) & 0xff);
-        b[3] = (byte) (offset & 0xff);
-        return b;
-    }
-
+    /**
+     * Add an attribute to the buffer
+     *
+     * @param tempBuffer the buffer to add the attribute to.
+     * @param offset     offset to add the attribute.
+     * @param str        the attribute value (a string).
+     * @param type       the attribute type.
+     * @return the offset after adding the attribute
+     */
     private static int addString(byte[] tempBuffer, int offset, String str, byte type) {
 
         if (StringUtils.isEmpty(str)) return offset;
@@ -120,6 +133,15 @@ public class RadiusPacket implements Serializable {
         return addByteArray(tempBuffer, offset, strBytes, type);
     }
 
+    /**
+     * Add an attribute to the buffer
+     *
+     * @param tempBuffer the buffer to add the attribute to.
+     * @param offset     offset to add the attribute.
+     * @param array      the attribute value (a byte array).
+     * @param type       the attribute type.
+     * @return the offset after adding the attribute
+     */
     private static int addByteArray(byte[] tempBuffer, int offset, byte[] array, byte type) {
 
         int length = array.length;
@@ -129,12 +151,31 @@ public class RadiusPacket implements Serializable {
         return offset + length;
     }
 
+    /**
+     * Add a USER-NAME attribute to the buffer
+     *
+     * @param tempBuffer the buffer to add the attribute to.
+     * @param offset     offset to add the attribute.
+     * @param uid        the user name.
+     * @return the offset after adding the user-name attribute
+     */
     private static int addUserName(byte[] tempBuffer, int offset, String uid) {
 
         if (StringUtils.isEmpty(uid)) return offset;
         return addString(tempBuffer, offset, uid, USER_NAME);
     }
 
+    /**
+     * Add a USER-PASSWORD attribute to the buffer
+     * The user-password is hidden using MD5 hash of the shared
+     * secret and request authenticator.
+     * See RFC 2865, https://tools.ietf.org/html/rfc2865
+     *
+     * @param tempBuffer the buffer to add the attribute to.
+     * @param offset     offset to add the attribute.
+     * @param password   the password.
+     * @return the offset after adding the user-password attribute
+     */
     private static int addPassword(byte[] tempBuffer, int offset, String password) {
 
         if (StringUtils.isEmpty(password)) return offset;
@@ -171,6 +212,13 @@ public class RadiusPacket implements Serializable {
         return -1;
     }
 
+    /**
+     * Add a SERVICE-TYPE attribute of Authenticate Only to the buffer
+     *
+     * @param tempBuffer the buffer to add the attribute to.
+     * @param offset     offset to add the attribute.
+     * @return the offset after adding the service-type attribute
+     */
     private static int addServiceType(byte[] tempBuffer, int offset) {
 
         tempBuffer[offset++] = SERVICE_TYPE;    // SERVICE_TYPE
@@ -182,12 +230,29 @@ public class RadiusPacket implements Serializable {
         return offset;
     }
 
+    /**
+     * Add the STATE attribute to the buffer
+     *
+     * @param buf    the buffer to add the attribute to.
+     * @param offset offset to add the attribute.
+     * @param state  the state value.
+     * @return the offset after adding the state attribute
+     */
     private static int addState(byte[] buf, int offset, byte[] state) {
 
         if (state == null) return offset;
         return addByteArray(buf, offset, state, STATE);
     }
 
+    /**
+     * Build a RADIUS Request Packet Buffer
+     * Add the uid, password and state values as RADIUS attributes.
+     *
+     * @param uid   the user name
+     * @param pass  offset to add the attribute.
+     * @param state the state value.
+     * @return the buffer
+     */
     static byte[] formRequestPacket(String uid, String pass, byte[] state) {
 
         byte[] tempBuffer = new byte[256];
@@ -211,6 +276,11 @@ public class RadiusPacket implements Serializable {
         return b;
     }
 
+    /**
+     * Generate a new random RADIUS Request Authenticator
+     *
+     * @return the 16 byte authenticator
+     */
     private static byte[] getRequestAuthenticator() {
 
         byte[] r = new byte[16];
@@ -218,6 +288,15 @@ public class RadiusPacket implements Serializable {
         return r;
     }
 
+    /**
+     * Search for the attribut type in the attribute list
+     * and return the attribute value.
+     *
+     * @param type       the attribute type to look for.
+     * @param attributes the list of attribute types and indexes.
+     * @param packetData the response packet holding the attribute values.
+     * @return the attribute value or null if not found.
+     */
     private static byte[] getAttribute(int type, byte[][] attributes, byte[] packetData) {
 
         for (byte[] attribute : attributes) {
@@ -230,6 +309,12 @@ public class RadiusPacket implements Serializable {
         return null;
     }
 
+    /**
+     * URL Encode the buffer.
+     * Replace + and /  with - and _.
+     *
+     * @param b the buffer.
+     */
     private static void urlEncode(byte[] b) {
 
         if (b != null) {
@@ -245,6 +330,15 @@ public class RadiusPacket implements Serializable {
         }
     }
 
+    /**
+     * Parse the RADIUS Response Packet.
+     * Check the packet lengths and for a valid MD5 hash
+     * Get the response type, challenge and state values
+     * and package them in a RadiusResponse Object.
+     *
+     * @param packet the RADIUS Packet.
+     * @return the RadiusResponse Object.
+     */
     static RadiusResponse parsePacket(DatagramPacket packet) {
 
         int packetLength = packet.getLength();

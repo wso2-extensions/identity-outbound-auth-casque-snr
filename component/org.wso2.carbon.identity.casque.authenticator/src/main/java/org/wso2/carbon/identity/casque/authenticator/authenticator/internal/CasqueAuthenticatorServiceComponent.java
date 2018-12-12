@@ -43,7 +43,7 @@ public class CasqueAuthenticatorServiceComponent {
 
         try {
             CasqueAuthenticator casqueAuth = new CasqueAuthenticator();
-            ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(), casqueAuth,null);
+            ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(), casqueAuth, null);
             if (log.isDebugEnabled()) {
                 log.debug(" CasqueAuthenticator bundle is activated ");
             }

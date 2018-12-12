@@ -20,7 +20,9 @@ package org.wso2.carbon.identity.casque.authenticator.authenticator.radius;
 import java.io.Serializable;
 
 /**
- * Received response from CASQUE SNR Authentication Server
+ * Received response from CASQUE SNR Authentication Server.
+ * Holds the response type, challenge and state values.
+ * A negative type indicates an error.
  */
 public class RadiusResponse implements Serializable {
 
@@ -38,11 +40,22 @@ public class RadiusResponse implements Serializable {
     public final static int ATTRIBUTE_ERROR = -3;
     public final static int RADIUS_ERROR = -4;
 
+    /**
+     * Constructor
+     * @param type the response type
+     */
     public RadiusResponse(int type) {
 
         this.type = type;
     }
 
+    /**
+     * Constructor
+     *
+     * @param type  the response type
+     * @param message the CASQUE SNR challenge string
+     * @param state the state value to return with the response to the challenge
+     */
     public RadiusResponse(int type, byte[] message, byte[] state) {
 
         this.type = type;
@@ -50,6 +63,11 @@ public class RadiusResponse implements Serializable {
         this.message = message;
     }
 
+    /**
+     * Get the CASQUE SNR Challenge
+     *
+     * @return the challenge or "NONE"
+     */
     public String getChallenge() {
 
         if (message == null) {
@@ -58,21 +76,40 @@ public class RadiusResponse implements Serializable {
         return new String(message);
     }
 
+    /**
+     * Get the STATE value
+     *
+     * @return the state value.
+     */
     public byte[] getState() {
 
         return state;
     }
 
+    /**
+     * Get the Response Type.
+     * ACCESS ACCEPT, ACCESS REJECT, ACCESS CHALLENGE or an Error
+     * @return the state value.
+     */
     public int getType() {
 
         return type;
     }
 
+    /**
+     * Return the Error as a String.
+     * @return the error string.
+     */
     public String getError() {
 
         return getErrorString(type);
     }
 
+    /**
+     * Get the Error String from the type value.
+     * @param type the error type
+     * @return the error string.
+     */
     private String getErrorString(int type) {
 
         switch (type) {

@@ -41,7 +41,7 @@ public class CasqueAuthenticatorConstants {
     public static final String CONF_CASQUE_PORT = "casque_port";
     public static final String CONF_LOCAL_PORT = "port";
     public static final String MD5 = "MD5";
-    public static final String Hash = "#";
+    public static final String HASH = "#";
     public static final String Login = "Login";
-    public static final String NoCache = " no-cache";
+    public static final String NO_CACHE = " no-cache";
 }

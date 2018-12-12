@@ -22,19 +22,31 @@ package org.wso2.carbon.identity.casque.authenticator.exception;
  */
 public class CasqueException extends Exception {
 
+    /**
+     * Constructor
+     */
     public CasqueException() {
 
         super();
     }
 
+    /**
+     * Constructor
+     *
+     * @param message the detail message.
+     */
     public CasqueException(String message) {
 
         super(message);
     }
 
+    /**
+     * @param message the detail message.
+     * @param e       the cause.
+     */
     public CasqueException(String message, Throwable e) {
 
-        super(message);
+        super(message, e);
     }
 
 }

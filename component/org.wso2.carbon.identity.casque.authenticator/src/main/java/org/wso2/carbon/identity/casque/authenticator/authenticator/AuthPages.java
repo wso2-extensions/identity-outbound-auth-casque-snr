@@ -32,7 +32,7 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This Class Load the ChallengePage and QR player
+ * This Class returns the CASQUE Challenge HTML Page
  */
 class AuthPages implements Serializable {
 
@@ -40,10 +40,11 @@ class AuthPages implements Serializable {
     private static final Log log = LogFactory.getLog(RadiusPacket.class);
 
     /**
-     * Return the HtmlResponse
-     * @param response
-     * @param data
-     * @throws IOException
+     * Add the text/html content type to the response and forward to returnResponse()
+     *
+     * @param response Http servlet response
+     * @param data     the content for the HTTP response
+     * @throws IOException :
      */
     private void returnHtmlResponse(HttpServletResponse response, String data) throws IOException {
 
@@ -52,28 +53,30 @@ class AuthPages implements Serializable {
     }
 
     /**
-     * Return the response
+     * Return the no cache headers and the data as content in the HTTP response.
      *
-     * @param response Http servlet response
-     * @param data     get data from the response
+     * @param response Http servlet response.
+     * @param data     the content to return.
      * @throws IOException :
      */
     private void returnResponse(HttpServletResponse response, String data) throws IOException {
 
-        response.addHeader(CasqueAuthenticatorConstants.CACHE_CONTROL, CasqueAuthenticatorConstants.NoCache);
-        response.addHeader(CasqueAuthenticatorConstants.PRAGMA, CasqueAuthenticatorConstants.NoCache);
+        response.addHeader(CasqueAuthenticatorConstants.CACHE_CONTROL, CasqueAuthenticatorConstants.NO_CACHE);
+        response.addHeader(CasqueAuthenticatorConstants.PRAGMA, CasqueAuthenticatorConstants.NO_CACHE);
         response.addHeader(CasqueAuthenticatorConstants.EXPIRES, "0");
         response.setContentLength(data.length());
         response.getOutputStream().print(data);
     }
 
     /**
-     * load the challengePage
+     * Create and Return the CASQUE Challenge HTML page.
+     * Using the qr_player.tmp template file and inserting
+     * the challenge string and the sessionDataKey.
      *
      * @param response       http servlet response
      * @param sessionDataKey sessionDataKey
      * @param challenge      challenge for QR_Player
-     * @throws CasqueException
+     * @throws CasqueException :
      */
     void challengePage(HttpServletResponse response, String sessionDataKey, String challenge) throws CasqueException {
 
@@ -92,12 +95,13 @@ class AuthPages implements Serializable {
     }
 
     /**
-     * load the casque QR player
+     * load a resource from the path specified.
      *
      * @param path loadResource path
-     * @throws CasqueException
+     * @throws CasqueException :
      */
     private String loadResource(String path) throws CasqueException {
+
         InputStream input = AuthPages.class.getClassLoader().getResourceAsStream(path);
         if (input != null) {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
