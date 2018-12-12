@@ -216,7 +216,7 @@ public class CasqueAuthenticatorTest {
 
         when(context.isLogoutRequest()).thenReturn(false);
         when(context.getProperty(anyString())).thenReturn(radiusState);
-        when(httpServletRequest.getParameter(anyString())).thenReturn("Login");
+        when(httpServletRequest.getParameter(anyString())).thenReturn("LOGIN");
         when(context.getProperty(CasqueAuthenticatorConstants.USER_NAME)).thenReturn("casque1");
         when(httpServletRequest.getParameter(CasqueAuthenticatorConstants.RESPONSE)).thenReturn("ACCESS_ACCEPT");
         when(Radius.sendRequest(anyString(), anyString(), (byte[]) anyObject())).thenReturn(radiusResponse);
@@ -246,7 +246,7 @@ public class CasqueAuthenticatorTest {
 
         when(context.isLogoutRequest()).thenReturn(false);
         when(context.getProperty(anyString())).thenReturn(radiusState);
-        when(httpServletRequest.getParameter(anyString())).thenReturn("Login");
+        when(httpServletRequest.getParameter(anyString())).thenReturn("LOGIN");
         when(context.getProperty(CasqueAuthenticatorConstants.USER_NAME)).thenReturn("casque1");
         when(httpServletRequest.getParameter(CasqueAuthenticatorConstants.RESPONSE)).thenReturn("ACCESS_REJECT");
         when(Radius.sendRequest(anyString(), anyString(), (byte[]) anyObject())).thenReturn(radiusResponse);

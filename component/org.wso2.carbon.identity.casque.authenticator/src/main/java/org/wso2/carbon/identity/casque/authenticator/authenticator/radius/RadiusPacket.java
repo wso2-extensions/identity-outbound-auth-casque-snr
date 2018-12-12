@@ -118,7 +118,7 @@ public class RadiusPacket implements Serializable {
     }
 
     /**
-     * Add an attribute to the buffer
+     * Add String to the buffer
      *
      * @param tempBuffer the buffer to add the attribute to.
      * @param offset     offset to add the attribute.
@@ -134,7 +134,7 @@ public class RadiusPacket implements Serializable {
     }
 
     /**
-     * Add an attribute to the buffer
+     * Add ByteArray to the buffer
      *
      * @param tempBuffer the buffer to add the attribute to.
      * @param offset     offset to add the attribute.
@@ -289,7 +289,7 @@ public class RadiusPacket implements Serializable {
     }
 
     /**
-     * Search for the attribut type in the attribute list
+     * Search for the attribute type in the attribute list
      * and return the attribute value.
      *
      * @param type       the attribute type to look for.

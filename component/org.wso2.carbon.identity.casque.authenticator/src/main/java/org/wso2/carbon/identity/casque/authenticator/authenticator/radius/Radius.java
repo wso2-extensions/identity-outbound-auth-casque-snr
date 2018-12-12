@@ -38,7 +38,7 @@ public class Radius implements Serializable {
     private static DatagramSocket socket = null;
 
     /**
-     * Send Send Request to CASQUE SNR Authentication Server
+     * Send Request to CASQUE SNR Authentication Server
      * @param uid the user name to send
      * @param pass the password to send
      * @param state the RADIUS state value to send
