@@ -31,6 +31,13 @@
     <modelVersion>4.0.0</modelVersion>
     <url>http://maven.apache.org</url>
 
+    <scm>
+        <url>https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</url>
+        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+
     <modules>
         <module>component/org.wso2.carbon.identity.casque.authenticator</module>
         <module>feature/org.wso2.carbon.identity.casque.authenticator.feature</module>
