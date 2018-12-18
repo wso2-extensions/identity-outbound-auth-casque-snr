@@ -39,8 +39,9 @@ public class Radius implements Serializable {
 
     /**
      * Send Request to CASQUE SNR Authentication Server
-     * @param uid the user name to send
-     * @param pass the password to send
+     *
+     * @param uid   the user name to send
+     * @param pass  the password to send
      * @param state the RADIUS state value to send
      * @return Challenge, Accept, Reject or an Error.
      * @throws CasqueException throws CasqueException If DatagramSocket creation fails
@@ -49,7 +50,8 @@ public class Radius implements Serializable {
 
         CasqueConfig.loadConfig();
 
-        byte[] buffer = RadiusPacket.formRequestPacket(uid, pass, state);
+        RadiusPacket rpkt = new RadiusPacket();
+        byte[] buffer = rpkt.formRequestPacket(uid, pass, state);
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, CasqueConfig.casqueAddress,
                 CasqueConfig.casquePort);
         try {
@@ -70,9 +72,9 @@ public class Radius implements Serializable {
                 socket.send(packet);
                 socket.setSoTimeout(2500);
                 socket.receive(responsePacket);
-                return RadiusPacket.parsePacket(responsePacket);
+                return rpkt.parsePacket(responsePacket);
             } catch (IOException ioe) {
-                log.error("Could not get the Datagram responsePacket",ioe);
+                log.error("Could not get the Datagram responsePacket", ioe);
             }
         }
         log.error("Error contacting the CASQUE SNR Server");

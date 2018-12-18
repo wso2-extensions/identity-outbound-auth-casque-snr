@@ -45,14 +45,12 @@ public class RadiusPacket implements Serializable {
     private final static byte REPLY_MESSAGE = 18;
     private final static byte STATE = 24;
 
-    private static byte[] reqAuth = null;
-    private static byte[] buffer = null;
+    private byte[] reqAuth = null;
     private static SecureRandom random = new SecureRandom();
     private static MessageDigest md5Digest = null;
     private static int currentID = 1;
 
     static {
-        reqAuth = getRequestAuthenticator();
         random.setSeed(System.currentTimeMillis());
         byte[] seed = random.generateSeed(17);
         random.setSeed(seed);
@@ -89,20 +87,6 @@ public class RadiusPacket implements Serializable {
             log.error("Error while cloning the message digest. ", e);
         }
         return md;
-    }
-
-    /**
-     * Use to get Buffer
-     *
-     * @param id id value
-     * @return b
-     */
-    private static byte[] getBuffer(int id) {
-
-        byte[] b = new byte[buffer.length];
-        System.arraycopy(buffer, 0, b, 0, buffer.length);
-        b[1] = (byte) (id & 0xff);
-        return b;
     }
 
     /**
@@ -253,7 +237,7 @@ public class RadiusPacket implements Serializable {
      * @param state the state value.
      * @return the buffer
      */
-    static byte[] formRequestPacket(String uid, String pass, byte[] state) {
+    public byte[] formRequestPacket(String uid, String pass, byte[] state) {
 
         byte[] tempBuffer = new byte[256];
         tempBuffer[0] = 1;   // ACCESS_REQUEST;
@@ -339,7 +323,7 @@ public class RadiusPacket implements Serializable {
      * @param packet the RADIUS Packet.
      * @return the RadiusResponse Object.
      */
-    static RadiusResponse parsePacket(DatagramPacket packet) {
+    public RadiusResponse parsePacket(DatagramPacket packet) {
 
         int packetLength = packet.getLength();
         if ((packetLength < 20) || (packetLength > 4096)) {
