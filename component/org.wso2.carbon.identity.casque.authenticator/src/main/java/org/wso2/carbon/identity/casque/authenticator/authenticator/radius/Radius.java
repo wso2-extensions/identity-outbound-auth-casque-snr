@@ -50,8 +50,8 @@ public class Radius implements Serializable {
 
         CasqueConfig.loadConfig();
 
-        RadiusPacket rpkt = new RadiusPacket();
-        byte[] buffer = rpkt.formRequestPacket(uid, pass, state);
+        RadiusPacket radiusPacket = new RadiusPacket();
+        byte[] buffer = radiusPacket.formRequestPacket(uid, pass, state);
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, CasqueConfig.casqueAddress,
                 CasqueConfig.casquePort);
         try {
@@ -72,7 +72,7 @@ public class Radius implements Serializable {
                 socket.send(packet);
                 socket.setSoTimeout(2500);
                 socket.receive(responsePacket);
-                return rpkt.parsePacket(responsePacket);
+                return radiusPacket.parsePacket(responsePacket);
             } catch (IOException ioe) {
                 log.error("Could not get the Datagram responsePacket", ioe);
             }
@@ -80,4 +80,5 @@ public class Radius implements Serializable {
         log.error("Error contacting the CASQUE SNR Server");
         return new RadiusResponse(RadiusResponse.RADIUS_ERROR);
     }
+
 }
