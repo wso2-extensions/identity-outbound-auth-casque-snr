@@ -62,25 +62,19 @@ Follow the steps below to set up a mapped claim for the CASQUE SNR authenticator
       * **User Store Domain Name**: PRIMARY
       * **Mapped Attribute**: displayName
       >> If the displayName attribute is already in use, you need to map another attribute.
+    * **Regular Expression**: ^[a-fA-F0-9]{3} [0-9]{6}$
+    * Select **Supported by Default**.
 
     ![10](images/10.png "10")
 
 5. Click **Add**. This adds token_id under the list of **Available Claims for http://wso2.org/claims**.
-6. Click **Edit** to edit the token_id claim, and then do the following changes:
-   * Specify the following as the **Regular Expression**:
-        ^[a-fA-F0-9]{3} [0-9]{6}$
-        
-   * Select **Supported by Default**.
-   
-   ![11](images/11.png "11")   
-
-7. Edit the displayName claim(or any other attribute that you mapped) from the list of available claims, and specify the following as the **Regular Expression**: ^[a-fA-F0-9]{3} [0-9]{6}$
+6. Edit the displayName claim(or any other attribute that you mapped) from the list of available claims, and specify the following as the **Regular Expression**: ^[a-fA-F0-9]{3} [0-9]{6}$
 
     ![20](images/20.png "20") 
 
     ![21](images/21.png "21") 
      
-8. Click **Update**.
+7. Click **Update**.
 
 Now you have set up the required claims. Now you can configure the service provider.
 
@@ -106,11 +100,11 @@ Now you have set up the required claims. Now you can configure the service provi
 ![18](images/18.png "18")
 
 9. Click **Add Authentication Step**.
-10.Under **Local Authenticators** in **Step 1**, select **basic** and click **Add Authenticator**.
-11.Click **Add Authentication Step**.
-12.Under **Local Authenticators** in **Step 2**, select **casque_auth** and click **Add Authenticator**.
-13.Select **Use subject identifier from this step** under **Step 1**.
-14.Select **Use attributes from this step** under **Step 2**.
+10. Under **Local Authenticators** in **Step 1**, select **basic** and click **Add Authenticator**.
+11. Click **Add Authentication Step**.
+12. Under **Local Authenticators** in **Step 2**, select **casque_auth** and click **Add Authenticator**.
+13. Select **Use subject identifier from this step** under **Step 1**.
+14. Select **Use attributes from this step** under **Step 2**.
 
    ![19](images/19.png "19")
 
@@ -138,7 +132,7 @@ Now you have configured the service provider. The next step is to create a user.
    * Enter the **First Name** and **Email**.
    * Enter the **token_id** that is allocated to the user.
 
-    ![14](images/1.png "14")
+    ![14](images/14.png "14")
 
 8. Click **Update**.	
 
