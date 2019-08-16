@@ -25,7 +25,7 @@
     <groupId>org.wso2.carbon.identity.casque.authenticator</groupId>
     <artifactId>casque-authenticator</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
     <name>CASQUEAuthenticator</name>
     <modelVersion>4.0.0</modelVersion>
     <url>http://maven.apache.org</url>
@@ -34,7 +34,7 @@
         <url>https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</url>
         <developerConnection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</developerConnection>
         <connection>scm:git:https://github.com/wso2-extensions/identity-outbound-auth-casque-snr.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.4</tag>
     </scm>
 
     <modules>
