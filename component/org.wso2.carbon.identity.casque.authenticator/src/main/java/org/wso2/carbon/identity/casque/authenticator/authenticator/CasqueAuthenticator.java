@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * CASQUE Authenticator main class.
- * Sends the user name and token Id to the CASQUE SNR Server using RADIUS protocol
+ * Sends the user name and token Id to the CASQUE SNR Server using RADIUS protocol.
  * to get the challenge and also return the response.
  * Authentication is a PASS for a valid response to the challenge.
  */
@@ -91,7 +91,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     /**
-     * Initiate the authentication request
+     * Initiate the authentication request.
      *
      * @param request,  http servlet request
      * @param response, http servlet response
@@ -139,7 +139,7 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
     }
 
     /**
-     * clean up the properties we set: RADIUS_STATE and USER_NAME
+     * clean up the properties we set: RADIUS_STATE and USER_NAME.
      */
     private void clearProperties(AuthenticationContext context) {
 
