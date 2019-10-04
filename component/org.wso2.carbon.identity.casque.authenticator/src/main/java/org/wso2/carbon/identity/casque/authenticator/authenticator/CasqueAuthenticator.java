@@ -178,7 +178,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
         context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
 
         String action = request.getParameter(CasqueAuthenticatorConstants.BTN_ACTION);
-        if (StringUtils.isNotEmpty(action) && CasqueAuthenticatorConstants.LOGIN.equals(action)) { // action can be null, LOGIN or Cancel
+        // action can be null, LOGIN or Cancel
+        if (StringUtils.isNotEmpty(action) && CasqueAuthenticatorConstants.LOGIN.equals(action)) {
 
             String userName = (String) context.getProperty(CasqueAuthenticatorConstants.USER_NAME);
             String challengeResponse = request.getParameter(CasqueAuthenticatorConstants.RESPONSE);

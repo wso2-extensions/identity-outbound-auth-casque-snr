@@ -32,7 +32,7 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This Class returns the CASQUE Challenge HTML Page
+ * This Class returns the CASQUE Challenge HTML Page.
  */
 class AuthPages implements Serializable {
 
