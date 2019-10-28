@@ -44,6 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * CASQUE Authenticator main class.
+ *
  * Sends the user name and token Id to the CASQUE SNR Server using RADIUS protocol.
  * to get the challenge and also return the response.
  * Authentication is a PASS for a valid response to the challenge.
@@ -71,7 +72,9 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                     .getRealmService().getTenantUserRealm(IdentityTenantUtil.getTenantIdOfUser(userName))
                     .getUserStoreManager();
 
-            // Getting the Token ID assigned to userName
+            /**
+             * Getting the Token ID assigned to userName
+             */
             Map<String, String> tokenIdMap = userStoreManager.getUserClaimValues(userName,
                     new String[]{CASQUE_SNR_CLAIM}, null);
 

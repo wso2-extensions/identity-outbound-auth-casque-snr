@@ -76,9 +76,8 @@ public class CasqueConfig {
                     + CasqueAuthenticatorConstants.CONF_FILE);
 
             try (InputStream input = new FileInputStream(casqueConf);
-                 BufferedReader bufferedInput = new BufferedReader(new InputStreamReader(input))
-            ) {
-                String line;
+                 BufferedReader bufferedInput = new BufferedReader(new InputStreamReader(input))) {
+                 String line;
                 while ((line = bufferedInput.readLine()) != null) {
                     parseLine(line);
                 }
