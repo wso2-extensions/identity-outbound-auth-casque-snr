@@ -72,9 +72,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
                     .getRealmService().getTenantUserRealm(IdentityTenantUtil.getTenantIdOfUser(userName))
                     .getUserStoreManager();
 
-            /**
-             * Getting the Token ID assigned to userName
-             */
+
+            // Getting the Token ID assigned to userName.
             Map<String, String> tokenIdMap = userStoreManager.getUserClaimValues(userName,
                     new String[]{CASQUE_SNR_CLAIM}, null);
 
@@ -114,8 +113,8 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             String tokenIdPlusName = tokenId + userName;
 
             context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
-            // Initial Access Request, fixed user,  token ID + username as the password
-            // Send request as Datagram packet
+            // Initial Access Request, fixed user,  token ID + username as the password.
+            // Send request as Datagram packet.
             RadiusResponse radiusResponse = Radius.sendRequest("CASQUE SNR", tokenIdPlusName, null);
             int radiusResponseType = radiusResponse.getType();
 
@@ -177,17 +176,17 @@ public class CasqueAuthenticator extends AbstractApplicationAuthenticator implem
             context.setCurrentAuthenticator(getName());
             return status;
         }
-        // radiusState is not null so handle the response to the challenge
+        // RadiusState is not null so handle the response to the challenge.
         context.setProperty(CasqueAuthenticatorConstants.RADIUS_STATE, null);
 
         String action = request.getParameter(CasqueAuthenticatorConstants.BTN_ACTION);
-        // action can be null, LOGIN or Cancel
+        // Action can be null, LOGIN or Cancel.
         if (StringUtils.isNotEmpty(action) && CasqueAuthenticatorConstants.LOGIN.equals(action)) {
 
             String userName = (String) context.getProperty(CasqueAuthenticatorConstants.USER_NAME);
             String challengeResponse = request.getParameter(CasqueAuthenticatorConstants.RESPONSE);
             try {
-                // Send the response to the CASQUE Server
+                // Send the response to the CASQUE Server.
                 RadiusResponse radiusResponse = Radius.sendRequest(userName, challengeResponse, radiusState);
                 int radiusResponseType = radiusResponse.getType();
 
