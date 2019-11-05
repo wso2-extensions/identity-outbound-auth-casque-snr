@@ -121,7 +121,6 @@
                             !org.wso2.carbon.identity.casque.authenticator.internal,
                             org.wso2.carbon.identity.casque.authenticator.*
                         </Export-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
