@@ -40,11 +40,11 @@ class AuthPages implements Serializable {
     private static final Log log = LogFactory.getLog(RadiusPacket.class);
 
     /**
-     * Add the text/html content type to the response and forward to returnResponse()
+     * Add the text/html content type to the response and forward to returnResponse().
      *
      * @param response Http servlet response
      * @param data     the content for the HTTP response
-     * @throws IOException :
+     * @throws IOException : IOException
      */
     private void returnHtmlResponse(HttpServletResponse response, String data) throws IOException {
 
@@ -57,7 +57,7 @@ class AuthPages implements Serializable {
      *
      * @param response Http servlet response.
      * @param data     the content to return.
-     * @throws IOException :
+     * @throws IOException : IOException
      */
     private void returnResponse(HttpServletResponse response, String data) throws IOException {
 
@@ -76,7 +76,7 @@ class AuthPages implements Serializable {
      * @param response       http servlet response
      * @param sessionDataKey sessionDataKey
      * @param challenge      challenge for QR_Player
-     * @throws CasqueException :
+     * @throws CasqueException : CasqueException
      */
     void challengePage(HttpServletResponse response, String sessionDataKey, String challenge) throws CasqueException {
 
@@ -98,7 +98,7 @@ class AuthPages implements Serializable {
      * load a resource from the path specified.
      *
      * @param path loadResource path
-     * @throws CasqueException :
+     * @throws CasqueException : CasqueException
      */
     private String loadResource(String path) throws CasqueException {
 
