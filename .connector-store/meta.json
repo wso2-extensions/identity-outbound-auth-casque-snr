@@ -6,5 +6,16 @@
     "description": "The CASQUE SNR authenticator allows you to integrate WSO2 Identity Server with CASQUE SNR so that you can use the CASQUE SNR multi-factor authentication technology to authenticate users.",
     "status": "Active",
     "labels": [],
-    "releases": []
+    "releases": [
+        {
+            "tagName": "1.0.0",
+            "products": [
+                "IS 5.7.0",
+                "IS 5.6.0",
+                "IS 5.5.0",
+                "IS 5.4.1",
+                "IS 5.4.0"
+            ]
+        }
+    ]
 }
