@@ -1,0 +1,17 @@
+{
+    "name": "CASQUE SNR",
+    "owner": "Distributed Management System Ltd",
+    "category": "Federated authenticator",
+    "documentationUrl": "https://github.com/wso2-extensions/identity-outbound-auth-casque-snr/blob/master/README.md",
+    "description": "The CASQUE SNR authenticator allows you to integrate WSO2 Identity Server with CASQUE SNR so that you can use the CASQUE SNR multi-factor authentication technology to authenticate users.",
+    "status": "Active",
+    "labels": [],
+    "releases": [
+        {
+            "tagName": "1.0.0",
+            "products": [
+                "IS 5.7.0"
+            ]
+        }
+    ]
+}
