@@ -160,6 +160,6 @@
         </resources>
     </build>
     <properties>
-        <testing.version>6.13.1</testing.version>
+        <testing.version>7.5.1</testing.version>
     </properties>
 </project>
